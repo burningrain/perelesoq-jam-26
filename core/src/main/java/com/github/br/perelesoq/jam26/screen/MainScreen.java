@@ -87,9 +87,9 @@ public class MainScreen extends AbstractGameScreen {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.bottom().padBottom(4f);
+        table.left().bottom().padBottom(6f);
 
-        table.add(settingsButton);
+        table.add(settingsButton).left();
         table.add(playButton).spaceLeft(8f);
         table.add(aboutButton).spaceLeft(8f);
         ////
@@ -102,7 +102,7 @@ public class MainScreen extends AbstractGameScreen {
         stage.addFocusableActor(playButton);
         stage.addFocusableActor(aboutButton);
 
-        stage.setFocusedActor(aboutButton);
+        stage.setFocusedActor(playButton);
 
         return stage;
     }
