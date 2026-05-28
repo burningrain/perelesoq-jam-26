@@ -1,8 +1,8 @@
 package com.github.br.perelesoq.jam26.teavm;
 
+import com.github.br.perelesoq.jam26.Main;
 import com.github.xpenatan.gdx.backends.teavm.TeaApplicationConfiguration;
 import com.github.xpenatan.gdx.backends.teavm.TeaApplication;
-import com.github.br.perelesoq.jam26.Main;
 
 /**
  * Launches the TeaVM/HTML application.

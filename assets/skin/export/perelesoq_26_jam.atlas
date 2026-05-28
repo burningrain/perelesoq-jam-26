@@ -1,0 +1,27 @@
+
+perelesoq_26_jam.png
+size: 512, 512
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+PressStart2P-Regular_12
+  rotate: false
+  xy: 1, 425
+  size: 506, 80
+  orig: 506, 80
+  offset: 0, 0
+  index: -1
+arrow
+  rotate: false
+  xy: 1, 411
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+arrow_empty
+  rotate: false
+  xy: 1, 397
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1

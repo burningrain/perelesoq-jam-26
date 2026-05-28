@@ -1,5 +1,17 @@
 # perelesoq_jam26
 
+
+## music
+
+game title - [8 Bit Video Game Fight Music](https://freesound.org/people/bone666138/sounds/466998/) / bone666138
+
+
+
+## fonts
+
+[Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) / CodeMan38
+
+# Project 
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 
 This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
