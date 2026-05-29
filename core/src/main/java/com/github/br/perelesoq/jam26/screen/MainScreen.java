@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -43,7 +42,7 @@ public class MainScreen extends AbstractGameScreen {
         spriteBatch = new SpriteBatch();
         camera = new OrthographicCamera();
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
-        centerCamera();
+        GameScreenUtils.centerCamera(camera);
 
         stage = createStage();
         Gdx.input.setInputProcessor(stage);
@@ -64,7 +63,7 @@ public class MainScreen extends AbstractGameScreen {
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("играть");
+                getGameManager().screenStateManager.changeCurrentState(Screens.LEVEL_1);
             }
         });
 
@@ -116,7 +115,6 @@ public class MainScreen extends AbstractGameScreen {
         spriteBatch.draw(texture, 0, 0);
         spriteBatch.end();
 
-        // Рисуем UI (он сам управляет своим batch)
         stage.act(delta);
         stage.draw();
     }
@@ -124,7 +122,7 @@ public class MainScreen extends AbstractGameScreen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        centerCamera();
+        GameScreenUtils.centerCamera(camera);
     }
 
     @Override
@@ -148,8 +146,6 @@ public class MainScreen extends AbstractGameScreen {
         texture = null;
     }
 
-    private void centerCamera() {
-        camera.position.set(Constants.WORLD_WIDTH / 2f, Constants.WORLD_HEIGHT / 2f, 0);
-    }
+
 
 }

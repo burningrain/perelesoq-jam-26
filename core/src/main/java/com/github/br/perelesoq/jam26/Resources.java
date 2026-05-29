@@ -13,4 +13,10 @@ public interface Resources {
         String MAIN_SCREEN_THEME = "music/8_Bit_Video_Game_Fight_Music_by_bone666138.mp3";
     }
 
+    interface Tiled {
+
+        String LEVEL_1 = "tiled-packed/level_1.tmx";
+
+    }
+
 }

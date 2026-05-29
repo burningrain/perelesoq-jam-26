@@ -8,6 +8,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MapPacker {
 
@@ -40,6 +46,11 @@ public class MapPacker {
         // Важно: устанавливаем количество сэмплов в 0
         config.samples = 0;
 
+        String inputDir = "D:/projects/perelesoq-jam-26/assets/tiled";
+        String outputDir = "D:/projects/perelesoq-jam-26/assets/tiled-packed";
+
+        File fileInputDir = new File(inputDir);
+        File fileOutputDirDir = new File(outputDir);
         // Создаём задачу упаковки
         Runnable packTask = () -> {
             try {
@@ -58,14 +69,11 @@ public class MapPacker {
                 settings.filterMin = Texture.TextureFilter.Linear;
                 settings.filterMag = Texture.TextureFilter.Linear;
 
-                String inputDir = "D:/projects/perelesoq-jam-26/assets/tiled";
-                String outputDir = "D:/projects/perelesoq-jam-26/assets/tiled-packed";
-
                 deleteDirectoryContents(outputDir);
 
                 TiledMapPacker packer = new TiledMapPacker();
-                TiledMapPacker.inputDir = new File(inputDir);
-                TiledMapPacker.outputDir = new File(outputDir);
+                TiledMapPacker.inputDir = fileInputDir;
+                TiledMapPacker.outputDir = fileOutputDirDir;
 
                 packer.processInputDir(settings);
 
@@ -75,6 +83,23 @@ public class MapPacker {
                 System.err.println("Ошибка при упаковке:");
                 e.printStackTrace();
             }
+
+            System.out.println("Начинаем копирование коллекций");
+            try {
+                File[] files = fileInputDir.listFiles();
+                if (files == null) {
+                    throw new IllegalArgumentException(fileInputDir.getAbsolutePath() + " не является папкой");
+                }
+                List<File> list = Arrays.stream(files).filter(e -> e.getName().contains(".tsx")).toList();
+                for (File file : list) {
+                    Files.copy(file.toPath(), fileOutputDirDir.toPath().resolve(file.getName()));
+                }
+            } catch (Exception e) {
+                System.err.println("Ошибка при копировании");
+                e.printStackTrace();
+            }
+
+
         };
 
         // Запускаем приложение с задачей упаковки

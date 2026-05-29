@@ -8,4 +8,8 @@ public interface Screens {
         new MainScreen(), new MainScreenLoader()
     );
 
+    GameScreenState LEVEL_1 = new GameScreenState(
+        new Level1Screen(), new Level1ScreenLoader()
+    );
+
 }

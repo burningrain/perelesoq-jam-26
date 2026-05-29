@@ -1,0 +1,13 @@
+
+level_1.png
+size: 16, 16
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+../pictures/level1/block1
+  rotate: false
+  xy: 1, 1
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
