@@ -20,6 +20,8 @@ dependencies {
   api "de.golfgl.gdxcontrollerutils:gdx-controllerutils-scene2d:$controllerScene2DVersion"
   api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
 
+  implementation project(':libgdx-simple-animation')
+
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }

@@ -19,4 +19,13 @@ public interface Resources {
 
     }
 
+    interface Atlases {
+        String GAME_OBJECTS = "pictures/atlas/game-objects.atlas";
+    }
+
+    interface Animations {
+        String HERO_ANIM_FSM = "animations/hero.afsm";
+        String HERO = "hero";
+    }
+
 }

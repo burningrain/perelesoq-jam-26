@@ -14,6 +14,8 @@ import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.github.ashvard.gdx.simple.animation.SimpleAnimation;
+import com.github.ashvard.gdx.simple.animation.SimpleAnimationSyncLoader;
 import com.github.br.perelesoq.jam26.screen.Screens;
 import com.github.br.perelesoq.jam26.structure.AbstractSimpleGame;
 import com.github.br.perelesoq.jam26.structure.GameSettings;
@@ -39,8 +41,11 @@ public class Main extends AbstractSimpleGame<UserFactoryImpl> {
         assetManager.setLoader(TextureAtlas.class, new TextureAtlasLoader(fileHandleResolver));
         //assetManager.setLoader(Skin.class, new FreeTypeSkinLoader(fileHandleResolver));
 
-        // 1. Регистрируем лоадер для FWSkin
+        // Регистрируем лоадер для FWSkin
         assetManager.setLoader(Skin.class, new FWSkinLoader(assetManager.getFileHandleResolver()));
+
+        // анимация
+        assetManager.setLoader(SimpleAnimation.class, new SimpleAnimationSyncLoader(fileHandleResolver));
 
         // эффекты частиц
         assetManager.setLoader(ParticleEffect.class, ".p", new ParticleEffectLoader(fileHandleResolver));

@@ -1,0 +1,226 @@
+{
+"name": "hero",
+"animators": [
+	{
+		"name": "pre_jump",
+		"frameFrequency": 12,
+		"mode": "NORMAL",
+		"from": 39,
+		"to": 42
+	},
+	{
+		"name": "jump",
+		"frameFrequency": 12,
+		"mode": "LOOP_PINGPONG",
+		"from": 43,
+		"to": 47,
+		"looping": true
+	},
+	{
+		"name": "training_legs",
+		"frameFrequency": 7,
+		"mode": "LOOP_PINGPONG",
+		"from": 39,
+		"to": 42,
+		"looping": true
+	},
+	{
+		"name": "attack_down",
+		"frameFrequency": 12,
+		"mode": "LOOP",
+		"from": 1,
+		"to": 3,
+		"looping": true
+	},
+	{
+		"name": "weapon_pre_jump",
+		"frameFrequency": 12,
+		"mode": "NORMAL",
+		"from": 52,
+		"to": 54
+	},
+	{
+		"name": "weapon_walk",
+		"frameFrequency": 12,
+		"mode": "LOOP",
+		"from": 5,
+		"to": 11,
+		"looping": true
+	},
+	{
+		"name": "weapon_idle",
+		"frameFrequency": 12,
+		"mode": "LOOP",
+		"from": 13,
+		"to": 18,
+		"looping": true
+	},
+	{
+		"name": "weapon_jump",
+		"frameFrequency": 12,
+		"mode": "LOOP_PINGPONG",
+		"from": 55,
+		"to": 59,
+		"looping": true
+	},
+	{
+		"name": "idle",
+		"frameFrequency": 12,
+		"mode": "LOOP",
+		"from": 19,
+		"to": 32,
+		"looping": true
+	},
+	{
+		"name": "death",
+		"frameFrequency": 12,
+		"mode": "NORMAL",
+		"from": 48,
+		"to": 51
+	},
+	{
+		"name": "attack_up",
+		"frameFrequency": 12,
+		"mode": "NORMAL",
+		"from": 4,
+		"to": 6,
+		"looping": true
+	},
+	{
+		"name": "walk",
+		"frameFrequency": 12,
+		"mode": "LOOP",
+		"from": 33,
+		"to": 39,
+		"looping": true
+	}
+],
+"fsm": {
+	"states": [
+		"pre_jump",
+		"jump",
+		"training_legs",
+		"attack_down",
+		"weapon_pre_jump",
+		"weapon_walk",
+		"weapon_idle",
+		"weapon_jump",
+		"idle",
+		"death",
+		"attack_up",
+		"walk"
+	],
+	"startState": "idle",
+	"endState": "death",
+	"transitions": [
+		{
+			"from": "ANY_STATE",
+			"to": "pre_jump",
+			"fsmPredicates": [
+				"is_pre_jump == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "walk",
+			"fsmPredicates": [
+				"is_walking == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "death",
+			"fsmPredicates": [
+				"is_death == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "weapon_pre_jump",
+			"fsmPredicates": [
+				"is_weapon_pre_jump == true"
+			]
+		},
+		{
+			"from": "weapon_pre_jump",
+			"to": "weapon_jump",
+			"fsmPredicates": []
+		},
+		{
+			"from": "pre_jump",
+			"to": "jump",
+			"fsmPredicates": []
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "attack_up",
+			"fsmPredicates": [
+				"is_attack_up == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "training_legs",
+			"fsmPredicates": [
+				"is_training_legs == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "jump",
+			"fsmPredicates": [
+				"is_jump == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "attack_down",
+			"fsmPredicates": [
+				"is_attack_down == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "weapon_idle",
+			"fsmPredicates": [
+				"is_weapon_idle == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "weapon_walk",
+			"fsmPredicates": [
+				"is_weapon_walking == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "weapon_jump",
+			"fsmPredicates": [
+				"is_weapon_jump == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "idle",
+			"fsmPredicates": [
+				"is_idle == true"
+			]
+		}
+	],
+	"variables": {
+		"is_weapon_walking": "Boolean",
+		"is_pre_jump": "Boolean",
+		"is_attack_up": "Boolean",
+		"is_death": "Boolean",
+		"is_idle": "Boolean",
+		"is_weapon_pre_jump": "Boolean",
+		"is_training_legs": "Boolean",
+		"is_weapon_jump": "Boolean",
+		"is_walking": "Boolean",
+		"is_attack_down": "Boolean",
+		"is_weapon_idle": "Boolean",
+		"is_jump": "Boolean"
+	}
+}
+}
