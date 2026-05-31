@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class ActorFactory {
@@ -17,14 +18,16 @@ public class ActorFactory {
     }
 
     public Actor getActor(MapObject object) {
-        String name = object.getName();
-        MapProperties properties = object.getProperties();
-
-        switch (name) {
-
-            default:
-                throw new IllegalArgumentException("unknown stage2d actor: " + name);
-        }
+        //TODO
+//        String name = object.getName();
+//        MapProperties properties = object.getProperties();
+//
+//        switch (name) {
+//
+//            default:
+//                throw new IllegalArgumentException("unknown stage2d actor: " + name);
+//        }
+        return new Group();
     }
 
 

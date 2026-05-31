@@ -66,8 +66,8 @@ public class MapPacker {
                 settings.paddingY = 2;
                 settings.duplicatePadding = true;
                 settings.edgePadding = true;
-                settings.filterMin = Texture.TextureFilter.Linear;
-                settings.filterMag = Texture.TextureFilter.Linear;
+                settings.filterMin = Texture.TextureFilter.Nearest;
+                settings.filterMag = Texture.TextureFilter.Nearest;
 
                 deleteDirectoryContents(outputDir);
 

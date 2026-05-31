@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="4" tileheight="4" infinite="0" nextlayerid="6" nextobjectid="10">
+ <tileset firstgid="1" source="game-object.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="80" height="45">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20PBxQAAAAAAAAAAAAAAAAA8GY4QAAB
+  </data>
+ </layer>
+ <imagelayer id="2" name="back_red">
+  <image source="../pictures/level1/station_entrance2.png" width="320" height="180"/>
+ </imagelayer>
+ <imagelayer id="3" name="back_blue">
+  <image source="../pictures/level1/station_entrance1.png" width="320" height="180"/>
+ </imagelayer>
+ <imagelayer id="4" name="elevator_back" offsetx="14.1927" offsety="7.63975">
+  <image source="../pictures/elevator/elevator_back_2.png" width="32" height="156"/>
+ </imagelayer>
+ <objectgroup id="5" name="objects">
+  <object id="5" gid="7" x="304.5" y="164" width="15" height="43"/>
+  <object id="6" gid="9" x="61" y="163.75" width="10" height="21"/>
+  <object id="7" gid="10" x="158.5" y="164.25" width="14" height="24"/>
+  <object id="8" gid="8" x="8.5" y="164.25" width="44" height="53"/>
+  <object id="9" gid="6" x="294.5" y="110.25" width="22" height="36"/>
+ </objectgroup>
+</map>

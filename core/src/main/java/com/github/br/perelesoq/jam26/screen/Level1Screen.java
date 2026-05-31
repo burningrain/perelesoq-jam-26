@@ -26,7 +26,7 @@ public class Level1Screen extends AbstractGameScreen {
     @Override
     public void show() {
         AssetManager assetManager = getGameManager().assetManager;
-        tiledMap = assetManager.get(Resources.Tiled.LEVEL_1);
+        tiledMap = assetManager.get(Resources.Tiled.LEVEL_1_ENTRANCE);
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);

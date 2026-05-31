@@ -15,12 +15,12 @@ public class Level1ScreenLoader implements AssetsLoader {
 
         params.textureMinFilter = Texture.TextureFilter.Nearest;
         params.textureMagFilter = Texture.TextureFilter.Nearest;
-        assetManager.load(Resources.Tiled.LEVEL_1, TiledMap.class, params);
+        assetManager.load(Resources.Tiled.LEVEL_1_ENTRANCE, TiledMap.class, params);
     }
 
     @Override
     public void unloadAssets(AssetManager assetManager) {
-        assetManager.unload(Resources.Tiled.LEVEL_1);
+        assetManager.unload(Resources.Tiled.LEVEL_1_ENTRANCE);
     }
 
 }
