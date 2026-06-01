@@ -14,6 +14,7 @@ import com.github.br.perelesoq.jam26.ecs.component.AnimationComponent;
 import com.github.br.perelesoq.jam26.ecs.component.RenderComponent;
 import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.system.input.InputSystem;
 import com.github.br.perelesoq.jam26.ecs.system.ui.AnimationSystem;
 import com.github.br.perelesoq.jam26.ecs.system.ui.CameraSystem;
 import com.github.br.perelesoq.jam26.ecs.system.ui.RenderSystem;
@@ -59,7 +60,7 @@ public class Level1Screen extends AbstractGameScreen {
         );
 
         WorldConfiguration setup = new WorldConfigurationBuilder()
-            //.with(new InputSystem())
+            .with(new InputSystem())
 
             .with(new CameraSystem(6.5f, 40f, 4f, 6f)) //TODO в значениях сильно не уверен
             .with(animationSystem)
