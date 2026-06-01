@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.*;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapImageLayer;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.br.perelesoq.jam26.render.ui.ObjectLayerPostRenderSupplier;
 
 public class CustomOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
 
@@ -20,12 +22,16 @@ public class CustomOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     private final ActorFactory actorFactory;
     private final InputMultiplexer inputMultiplexer;
 
+    private final ObjectLayerPostRenderSupplier postRenderSupplier;
+
     public CustomOrthogonalTiledMapRenderer(
-        ActorFactory actorFactory, Viewport viewport, TiledMap map, float unitScale
+        ActorFactory actorFactory, Viewport viewport, TiledMap map, float unitScale,
+        ObjectLayerPostRenderSupplier postRenderSupplier
     ) {
         super(map, unitScale);
         this.viewport = viewport;
         this.actorFactory = actorFactory;
+        this.postRenderSupplier = postRenderSupplier;
 
         clampToEdgeTextures(map);
 
@@ -40,6 +46,10 @@ public class CustomOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
         stage.getViewport().apply();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.getRoot().draw(batch, 1f);
+
+        if (postRenderSupplier != null) {
+            postRenderSupplier.draw(layer.getName(), batch);
+        }
     }
 
     public void updateOffsetsForGroupLayer(String layerName, float offsetX, float offsetY) {
