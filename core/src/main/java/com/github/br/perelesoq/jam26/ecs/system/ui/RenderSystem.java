@@ -7,16 +7,20 @@ import com.artemis.EntitySubscription;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.br.perelesoq.jam26.Constants;
+import com.github.br.perelesoq.jam26.ecs.component.AnimationComponent;
+import com.github.br.perelesoq.jam26.ecs.component.PhysicsComponent;
 import com.github.br.perelesoq.jam26.ecs.component.RenderComponent;
 import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
 import com.github.br.perelesoq.jam26.render.ActorFactory;
 import com.github.br.perelesoq.jam26.render.CustomOrthogonalTiledMapRenderer;
-import com.github.br.perelesoq.jam26.render.ui.ObjectLayerPostRenderSupplier;
+import com.github.br.perelesoq.jam26.render.ui.ObjectLayerObjectRenderInterceptor;
 
 public class RenderSystem extends BaseSystem {
 
@@ -28,12 +32,19 @@ public class RenderSystem extends BaseSystem {
     // Маппер для быстрого доступа к компонентам
     protected ComponentMapper<TransformComponent> transformMapper;
     protected ComponentMapper<RenderComponent> renderMapper;
+    protected ComponentMapper<AnimationComponent> animMapper;
+    protected ComponentMapper<PhysicsComponent> physicsMapper;
 
-    private final ObjectLayerPostRenderSupplierImpl postRenderSupplier = new ObjectLayerPostRenderSupplierImpl();
+    private final ObjectLayerObjectRenderInterceptorImpl postRenderSupplier = new ObjectLayerObjectRenderInterceptorImpl();
 
-    private class ObjectLayerPostRenderSupplierImpl implements ObjectLayerPostRenderSupplier {
+    private class ObjectLayerObjectRenderInterceptorImpl implements ObjectLayerObjectRenderInterceptor {
 
         private final ObjectMap<String, IntBag> layerEntitiesMap = new ObjectMap<>();
+
+        @Override
+        public boolean isIgnoreLayer(String name) {
+            return Constants.GAME_OBJECTS_LAYER.equals(name);
+        }
 
         @Override
         public void draw(String layerName, Batch batch) {
@@ -44,9 +55,30 @@ public class RenderSystem extends BaseSystem {
 
             int size = intBag.size();
             for (int i = 0; i < size; i++) {
-                RenderComponent renderComponent = renderMapper.get(i);
-                TransformComponent transformComponent = transformMapper.get(i);
-                batch.draw(renderComponent.textureRegion, transformComponent.x, transformComponent.y);
+                int entityId = intBag.get(i);
+                RenderComponent renderComponent = renderMapper.get(entityId);
+                TransformComponent transformComponent = transformMapper.get(entityId);
+                AnimationComponent animationComponent = animMapper.get(entityId);
+                PhysicsComponent physicsComponent = physicsMapper.get(entityId);
+
+                TextureRegion frame = animationComponent.simpleAnimationComponent.animatorDynamicPart.currentFrame;
+                boolean isFlipX = animationComponent.simpleAnimationComponent.animatorDynamicPart.isFlipX;
+                boolean isFlipY = animationComponent.simpleAnimationComponent.animatorDynamicPart.isFlipY;
+
+                // Вызываем метод батча, передавая туда параметры региона
+                batch.draw(
+                    frame.getTexture(),                      // Наша общая текстура-атлас
+                    transformComponent.x,                             // Позиция X на экране
+                    transformComponent.y,                             // Позиция Y на экране
+                    physicsComponent.width,                           // Ширина на экране (например, 32f)
+                    physicsComponent.height,                          // Высота на экране (например, 32f)
+                    frame.getRegionX(),                      // srcX: пиксельный X левого верхнего угла кадра в атласе
+                    frame.getRegionY(),                      // srcY: пиксельный Y левого верхнего угла кадра в атласе
+                    frame.getRegionWidth(),                  // srcWidth: пиксельная ширина кадра в атласе
+                    frame.getRegionHeight(),                 // srcHeight: пиксельная высота кадра в атласе
+                    isFlipX,                                 // Тот самый флаг разворота влево/вправо!
+                    isFlipY                                  // Флаг разворота вверх/вниз
+                );
             }
         }
 
@@ -87,7 +119,9 @@ public class RenderSystem extends BaseSystem {
         for (int i = 0, s = actives.size(); s > i; i++) {
             int entityId = ids[i];
             RenderComponent renderComponent = renderMapper.get(entityId);
-            postRenderSupplier.addEntityToLayer(renderComponent.layer, entityId);
+            if (renderComponent != null) {
+                postRenderSupplier.addEntityToLayer(renderComponent.layer, entityId);
+            }
         }
 
         ViewPortSingletonComponent viewPortComponent = ViewPortSingletonComponent.INSTANCE;

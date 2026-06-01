@@ -1,11 +1,17 @@
 package com.github.br.perelesoq.jam26.ecs.component;
 
-import com.artemis.Component;
+import com.artemis.PooledComponent;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class RenderComponent extends Component {
+public class RenderComponent extends PooledComponent {
 
     public String layer;
-    public TextureRegion textureRegion;
+    public transient TextureRegion textureRegion;
+
+    @Override
+    protected void reset() {
+        layer = null;
+        textureRegion = null;
+    }
 
 }

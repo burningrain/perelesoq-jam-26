@@ -1,0 +1,57 @@
+package com.github.br.perelesoq.jam26.ecs.system.input;
+
+import com.artemis.BaseSystem;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
+import de.golfgl.gdx.controllers.mapping.MappedController;
+
+public abstract class AbstractInputSystem extends BaseSystem {
+
+    private final MyControllerMapping myControllerMapping;
+    private MappedController mappedController;
+    private Controller lastActiveController;
+
+    private final GameInputRegistry inputRegistry;
+
+    public AbstractInputSystem(GameInputRegistry gameInputRegistry) {
+        this.inputRegistry = gameInputRegistry;
+        myControllerMapping = new MyControllerMapping();
+
+        // Пытаемся инициализировать контроллер, если он уже подключен
+        checkAndRefreshController();
+    }
+
+    @Override
+    protected void initialize() {
+    }
+
+    /**
+     * Метод проверяет, изменился ли статус подключения геймпада.
+     * Если геймпад отключили или подключили новый — он пересоздает MappedController.
+     */
+    private void checkAndRefreshController() {
+        Controller currentController = Controllers.getCurrent();
+
+        // Если физический контроллер изменился (отключили, или подключили вместо него другой)
+        if (currentController != lastActiveController) {
+            lastActiveController = currentController;
+            if (currentController != null) {
+                // Инициализируем MappedController с новым активным геймпадом
+                mappedController = new MappedController(currentController, myControllerMapping);
+            } else {
+                mappedController = null;
+            }
+        }
+    }
+
+    @Override
+    protected void processSystem() {
+        checkAndRefreshController();
+        inputRegistry.tick(mappedController); // Обновляем Just Pressed состояния для геймпада
+
+        processGameAction(inputRegistry, mappedController);
+    }
+
+    protected abstract void processGameAction(GameInputRegistry inputRegistry, MappedController mappedController);
+
+}

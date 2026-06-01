@@ -9,11 +9,19 @@ public class AnimationFactory {
 
     public static SimpleAnimationComponent createHero() {
         FsmContext fsmContext = new FsmContext();
+        resetHeroAnimationContext(fsmContext);
+        fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_IDLE, true);
+
+        AnimatorDynamicPart animatorDynamicPart = new AnimatorDynamicPart(/*animatorIdle*/);
+        return new SimpleAnimationComponent(Resources.Animations.HERO, fsmContext, animatorDynamicPart);
+    }
+
+    public static void resetHeroAnimationContext(FsmContext fsmContext) {
         fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_WEAPON_WALKING, false);
         fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_PRE_JUMP, false);
         fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_ATTACK_UP, false);
         fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_DEATH, false);
-        fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_IDLE, true);
+        fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_IDLE, false);
         fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_WEAPON_PRE_JUMP, false);
         fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_TRAINING_LEGS, false);
         fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_WEAPON_JUMP, false);
@@ -21,10 +29,6 @@ public class AnimationFactory {
         fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_ATTACK_DOWN, false);
         fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_WEAPON_IDLE, false);
         fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_JUMP, false);
-
-
-        AnimatorDynamicPart animatorDynamicPart = new AnimatorDynamicPart(/*animatorIdle*/);
-        return new SimpleAnimationComponent(Resources.Animations.HERO, fsmContext, animatorDynamicPart);
     }
 
 }

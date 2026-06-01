@@ -1,6 +1,8 @@
 package com.github.br.perelesoq.jam26.screen;
 
-import com.artemis.*;
+import com.artemis.World;
+import com.artemis.WorldConfiguration;
+import com.artemis.WorldConfigurationBuilder;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -10,11 +12,11 @@ import com.github.ashvard.gdx.simple.animation.SimpleAnimation;
 import com.github.br.perelesoq.jam26.Constants;
 import com.github.br.perelesoq.jam26.Resources;
 import com.github.br.perelesoq.jam26.ecs.EntityFactory;
-import com.github.br.perelesoq.jam26.ecs.component.AnimationComponent;
-import com.github.br.perelesoq.jam26.ecs.component.RenderComponent;
-import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
-import com.github.br.perelesoq.jam26.ecs.system.input.InputSystem;
+import com.github.br.perelesoq.jam26.ecs.system.HeroAnimationStateSystem;
+import com.github.br.perelesoq.jam26.ecs.system.PhysicsSystem;
+import com.github.br.perelesoq.jam26.ecs.system.input.InputSystemImpl;
 import com.github.br.perelesoq.jam26.ecs.system.ui.AnimationSystem;
 import com.github.br.perelesoq.jam26.ecs.system.ui.CameraSystem;
 import com.github.br.perelesoq.jam26.ecs.system.ui.RenderSystem;
@@ -45,7 +47,7 @@ public class Level1Screen extends AbstractGameScreen {
         world = createEcsEngine(assetManager);
 
         EntityFactory entityFactory = world.getSystem(EntityFactory.class);
-        entityFactory.createPlayer(50, 50);
+        entityFactory.createGameObjects(tiledMap);
     }
 
     private World createEcsEngine(AssetManager assetManager) {
@@ -60,7 +62,9 @@ public class Level1Screen extends AbstractGameScreen {
         );
 
         WorldConfiguration setup = new WorldConfigurationBuilder()
-            .with(new InputSystem())
+            .with(new InputSystemImpl())
+            .with(new PhysicsSystem())
+            .with(new HeroAnimationStateSystem())
 
             .with(new CameraSystem(6.5f, 40f, 4f, 6f)) //TODO в значениях сильно не уверен
             .with(animationSystem)
@@ -74,6 +78,7 @@ public class Level1Screen extends AbstractGameScreen {
 
     @Override
     public void render(float delta) {
+        world.setDelta(delta);
         world.process();
     }
 

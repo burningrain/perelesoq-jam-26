@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.*;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapImageLayer;
@@ -13,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.br.perelesoq.jam26.render.ui.ObjectLayerPostRenderSupplier;
+import com.github.br.perelesoq.jam26.render.ui.ObjectLayerObjectRenderInterceptor;
 
 public class CustomOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
 
@@ -22,11 +21,11 @@ public class CustomOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     private final ActorFactory actorFactory;
     private final InputMultiplexer inputMultiplexer;
 
-    private final ObjectLayerPostRenderSupplier postRenderSupplier;
+    private final ObjectLayerObjectRenderInterceptor postRenderSupplier;
 
     public CustomOrthogonalTiledMapRenderer(
         ActorFactory actorFactory, Viewport viewport, TiledMap map, float unitScale,
-        ObjectLayerPostRenderSupplier postRenderSupplier
+        ObjectLayerObjectRenderInterceptor postRenderSupplier
     ) {
         super(map, unitScale);
         this.viewport = viewport;
@@ -41,15 +40,17 @@ public class CustomOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
 
     @Override
     public void renderObjects(MapLayer layer) {
+        String name = layer.getName();
+        if (isInterceptorLayer(layer)) {
+            postRenderSupplier.draw(name, batch);
+            return;
+        }
+
         // Рендерим Stage
-        Stage stage = getStageByLayerName(layer.getName());
+        Stage stage = getStageByLayerName(name);
         stage.getViewport().apply();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.getRoot().draw(batch, 1f);
-
-        if (postRenderSupplier != null) {
-            postRenderSupplier.draw(layer.getName(), batch);
-        }
     }
 
     public void updateOffsetsForGroupLayer(String layerName, float offsetX, float offsetY) {
@@ -114,6 +115,10 @@ public class CustomOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
                 continue;
             }
 
+            if (isInterceptorLayer(layer)) {
+                continue;
+            }
+
             Stage stage = new Stage(viewport, getBatch());
             for (MapObject object : objects) {
                 Actor actor = actorFactory.getActor(object);
@@ -131,6 +136,10 @@ public class CustomOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
             stages.put(layer.getName(), stage);
             inputMultiplexer.addProcessor(stage);
         }
+    }
+
+    private boolean isInterceptorLayer(MapLayer layer) {
+        return postRenderSupplier.isIgnoreLayer(layer.getName());
     }
 
     public InputProcessor getInputProcessor() {
