@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.component;
+package com.github.br.perelesoq.jam26.ecs.component.render;
 
 import com.artemis.PooledComponent;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

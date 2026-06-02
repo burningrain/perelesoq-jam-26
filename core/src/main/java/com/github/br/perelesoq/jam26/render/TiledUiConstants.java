@@ -6,6 +6,7 @@ public interface TiledUiConstants {
         String GAME_OBJECTS_LAYER = "game_objects";
         String TRIGGERS_LAYER = "triggers";
         String ACTORS_LAYER = "actors";
+        String BACK_BLUE = "back_blue";
     }
 
     interface Actors {

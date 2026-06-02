@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.system;
+package com.github.br.perelesoq.jam26.ecs.system.physics;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;

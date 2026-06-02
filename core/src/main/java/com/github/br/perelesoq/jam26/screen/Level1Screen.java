@@ -12,9 +12,11 @@ import com.github.ashvard.gdx.simple.animation.SimpleAnimation;
 import com.github.br.perelesoq.jam26.Constants;
 import com.github.br.perelesoq.jam26.Resources;
 import com.github.br.perelesoq.jam26.ecs.EntityFactory;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.SirenSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.system.HeroAnimationStateSystem;
-import com.github.br.perelesoq.jam26.ecs.system.PhysicsSystem;
+import com.github.br.perelesoq.jam26.ecs.system.SirenSystem;
+import com.github.br.perelesoq.jam26.ecs.system.physics.PhysicsSystem;
 import com.github.br.perelesoq.jam26.ecs.system.trigger.TriggerFactory;
 import com.github.br.perelesoq.jam26.ecs.system.trigger.TriggerSystem;
 import com.github.br.perelesoq.jam26.ecs.system.input.InputSystemImpl;
@@ -52,6 +54,8 @@ public class Level1Screen extends AbstractGameScreen {
 
         TriggerFactory system = world.getSystem(TriggerFactory.class);
         system.createGameObjects(tiledMap);
+
+        SirenSingletonComponent.INSTANCE.isActive = true;
     }
 
     private World createEcsEngine(AssetManager assetManager) {
@@ -69,6 +73,8 @@ public class Level1Screen extends AbstractGameScreen {
             .with(new InputSystemImpl())
             .with(new PhysicsSystem())
             .with(new TriggerSystem())
+
+            .with(new SirenSystem())
             .with(new HeroAnimationStateSystem())
 
             .with(new CameraSystem(6.5f, 40f, 4f, 6f)) //TODO в значениях сильно не уверен

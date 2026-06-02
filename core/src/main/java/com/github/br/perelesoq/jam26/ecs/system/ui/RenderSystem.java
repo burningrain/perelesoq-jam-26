@@ -8,11 +8,14 @@ import com.artemis.utils.IntBag;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.br.perelesoq.jam26.ecs.component.RenderComponent;
+import com.github.br.perelesoq.jam26.ecs.component.render.ChangeRenderLayerComponent;
+import com.github.br.perelesoq.jam26.ecs.component.render.RenderComponent;
 import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
 import com.github.br.perelesoq.jam26.render.ActorFactory;
@@ -27,9 +30,12 @@ public class RenderSystem extends BaseSystem {
     // Подписка на сущности с RenderComponent
     private EntitySubscription renderSubscription;
 
+    private EntitySubscription layerChangeSubscription; // подписка на событие изменения слоев
+
     // Маппер для быстрого доступа к компонентам
     protected ComponentMapper<TransformComponent> transformMapper;
     protected ComponentMapper<RenderComponent> renderMapper;
+    protected ComponentMapper<ChangeRenderLayerComponent> changeRenderLayerMapper;
 
     private final ObjectLayerObjectRenderInterceptorImpl postRenderSupplier = new ObjectLayerObjectRenderInterceptorImpl();
 
@@ -116,10 +122,46 @@ public class RenderSystem extends BaseSystem {
         // Инициализируем подписку на сущности, у которых есть RenderComponent
         renderSubscription = world.getAspectSubscriptionManager()
             .get(Aspect.all(RenderComponent.class));
+
+        // Отлавливаем сущности, у которых есть компонент-команда изменения слоя
+        layerChangeSubscription = world.getAspectSubscriptionManager()
+            .get(Aspect.all(ChangeRenderLayerComponent.class));
     }
 
     @Override
     protected void processSystem() {
+        handleChangeLayers();
+        handleRendering();
+    }
+
+    private void handleChangeLayers() {
+        IntBag actives = layerChangeSubscription.getEntities();
+        int[] ids = actives.getData();
+
+        for (int i = 0, s = actives.size(); s > i; i++) {
+            int entityId = ids[i];
+            ChangeRenderLayerComponent changeRenderLayerComponent = changeRenderLayerMapper.get(entityId);
+            if (!changeRenderLayerComponent.isDirty) {
+                continue;
+            }
+
+            String layerName = changeRenderLayerComponent.layerName;
+            MapLayer layer = renderer.getLayer(layerName);
+            if (layer == null) {
+                throw new GdxRuntimeException("layer [" + layerName + "] is not found");
+            }
+
+            layer.setVisible(changeRenderLayerComponent.isVisible);
+            layer.setOpacity(changeRenderLayerComponent.opacity);
+            layer.setTintColor(changeRenderLayerComponent.tintColor);
+            layer.setOffsetX(changeRenderLayerComponent.offsetX);
+            layer.setOffsetY(changeRenderLayerComponent.offsetY);
+            layer.setParallaxX(changeRenderLayerComponent.parallaxFactor.x);
+            layer.setParallaxY(changeRenderLayerComponent.parallaxFactor.y);
+        }
+    }
+
+    private void handleRendering() {
         IntBag actives = renderSubscription.getEntities();
         int[] ids = actives.getData();
 

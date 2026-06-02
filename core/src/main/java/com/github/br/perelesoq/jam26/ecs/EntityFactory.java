@@ -11,6 +11,7 @@ import com.github.br.perelesoq.jam26.animation.AnimationFactory;
 import com.github.br.perelesoq.jam26.ecs.component.*;
 import com.github.br.perelesoq.jam26.ecs.component.physics.Hitbox;
 import com.github.br.perelesoq.jam26.ecs.component.physics.PhysicsComponent;
+import com.github.br.perelesoq.jam26.ecs.component.render.RenderComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 
