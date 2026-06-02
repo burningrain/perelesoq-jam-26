@@ -8,4 +8,6 @@ public class HeroSingletonComponent {
 
     public boolean hasWeapon = false;
 
+    public float RUN_SPEED = 90f; // 40f слишком медленно для экрана 320, персонаж будет ползти
+
 }

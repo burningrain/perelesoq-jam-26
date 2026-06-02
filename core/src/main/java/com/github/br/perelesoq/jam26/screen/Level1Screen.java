@@ -12,10 +12,11 @@ import com.github.ashvard.gdx.simple.animation.SimpleAnimation;
 import com.github.br.perelesoq.jam26.Constants;
 import com.github.br.perelesoq.jam26.Resources;
 import com.github.br.perelesoq.jam26.ecs.EntityFactory;
-import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.system.HeroAnimationStateSystem;
 import com.github.br.perelesoq.jam26.ecs.system.PhysicsSystem;
+import com.github.br.perelesoq.jam26.ecs.system.trigger.TriggerFactory;
+import com.github.br.perelesoq.jam26.ecs.system.trigger.TriggerSystem;
 import com.github.br.perelesoq.jam26.ecs.system.input.InputSystemImpl;
 import com.github.br.perelesoq.jam26.ecs.system.ui.AnimationSystem;
 import com.github.br.perelesoq.jam26.ecs.system.ui.CameraSystem;
@@ -48,6 +49,9 @@ public class Level1Screen extends AbstractGameScreen {
 
         EntityFactory entityFactory = world.getSystem(EntityFactory.class);
         entityFactory.createGameObjects(tiledMap);
+
+        TriggerFactory system = world.getSystem(TriggerFactory.class);
+        system.createGameObjects(tiledMap);
     }
 
     private World createEcsEngine(AssetManager assetManager) {
@@ -64,6 +68,7 @@ public class Level1Screen extends AbstractGameScreen {
         WorldConfiguration setup = new WorldConfigurationBuilder()
             .with(new InputSystemImpl())
             .with(new PhysicsSystem())
+            .with(new TriggerSystem())
             .with(new HeroAnimationStateSystem())
 
             .with(new CameraSystem(6.5f, 40f, 4f, 6f)) //TODO в значениях сильно не уверен
@@ -71,6 +76,7 @@ public class Level1Screen extends AbstractGameScreen {
             .with(renderSystem)
 
             .with(new EntityFactory())
+            .with(new TriggerFactory(renderSystem.getRenderer()))
             .build();
 
         return new World(setup);

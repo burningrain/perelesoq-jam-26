@@ -30,6 +30,10 @@ public class AnimatedImage extends Image {
         animatedDrawable.play();
     }
 
+    public Animation<TextureRegion> getAnimation() {
+        return animatedDrawable.getAnimation();
+    }
+
     public void pause() {
         animatedDrawable.pause();
     }

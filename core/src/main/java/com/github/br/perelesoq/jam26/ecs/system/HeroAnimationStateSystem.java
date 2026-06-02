@@ -8,17 +8,19 @@ import com.github.br.perelesoq.jam26.animation.AnimationFactory;
 import com.github.br.perelesoq.jam26.animation.HeroAnimationType;
 import com.github.br.perelesoq.jam26.ecs.component.AnimationComponent;
 import com.github.br.perelesoq.jam26.ecs.component.CharacterStateComponent;
+import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
 import com.github.br.perelesoq.jam26.ecs.component.VelocityComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
 
 public class HeroAnimationStateSystem extends IteratingSystem {
 
+    private ComponentMapper<TransformComponent> transformMapper;
     private ComponentMapper<AnimationComponent> mAnimation;
     private ComponentMapper<VelocityComponent> mVelocity;
     private ComponentMapper<CharacterStateComponent> mState;
 
     public HeroAnimationStateSystem() {
-        super(Aspect.all(AnimationComponent.class, VelocityComponent.class, CharacterStateComponent.class));
+        super(Aspect.all(TransformComponent.class, AnimationComponent.class, VelocityComponent.class, CharacterStateComponent.class));
     }
 
     @Override
@@ -38,17 +40,18 @@ public class HeroAnimationStateSystem extends IteratingSystem {
         AnimationFactory.resetHeroAnimationContext(fsmContext);
 
         // Меняем направление ТОЛЬКО если скорость отлична от нуля
+        TransformComponent transformComponent = transformMapper.get(entityId);
         if (velocity.x < -0.1f) {
-            animComp.simpleAnimationComponent.animatorDynamicPart.isFlipX = true;
-        } else if (velocity.x >= 0f) {
-            animComp.simpleAnimationComponent.animatorDynamicPart.isFlipX = false;
+            transformComponent.flipX = true;
+        } else if (velocity.x > 0f) {
+            transformComponent.flipX = false;
         }
 
         // 2. РАСЧЕТ ТЕКУЩЕГО СОСТОЯНИЯ НА ОСНОВЕ ФИЗИКИ
         if (!state.onGround) {
             // --- ПЕРСОНАЖ В ВОЗДУХЕ (ПРЫЖОК / ПАДЕНИЕ) ---
             if (hasWeapon) {
-                fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_WEAPON_PRE_JUMP, true);
+                fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_WEAPON_JUMP, true);
             } else {
                 fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_JUMP, true);
             }

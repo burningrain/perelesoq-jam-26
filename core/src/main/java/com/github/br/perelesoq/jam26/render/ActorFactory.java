@@ -28,15 +28,15 @@ public class ActorFactory {
         MapProperties properties = object.getProperties();
 
         switch (name) {
-            case StageActorNames.CAMERA:
+            case TiledUiConstants.Actors.CAMERA:
                 return createCamera(properties);
-            case StageActorNames.ELEVATOR:
+            case TiledUiConstants.Actors.ELEVATOR:
                 return createElevator(properties);
-            case StageActorNames.CONTROLLER:
+            case TiledUiConstants.Actors.CONTROLLER:
                 return createController(properties);
-            case StageActorNames.DOOR:
+            case TiledUiConstants.Actors.DOOR:
                 return createDoor(properties);
-            case StageActorNames.TERMINAL:
+            case TiledUiConstants.Actors.TERMINAL:
                 return createTerminal(properties);
             default:
                 throw new IllegalArgumentException("unknown stage2d actor: " + name);
@@ -44,7 +44,7 @@ public class ActorFactory {
     }
 
     private Actor createDoor(MapProperties properties) {
-        return createAnimationImage(StageActorNames.DOOR);
+        return createAnimationImage(TiledUiConstants.Actors.DOOR);
     }
 
     private Actor createController(MapProperties properties) {
@@ -82,11 +82,15 @@ public class ActorFactory {
     }
 
     private Actor createCamera(MapProperties properties) {
-        return createAnimationImage(StageActorNames.CAMERA);
+        AnimatedImage animationImage = createAnimationImage(TiledUiConstants.Actors.CAMERA);
+        animationImage.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+        animationImage.getAnimation().setFrameDuration(0.5f);
+        animationImage.play();
+        return animationImage;
     }
 
     private Actor createTerminal(MapProperties properties) {
-        return createAnimationImage(StageActorNames.TERMINAL);
+        return createAnimationImage(TiledUiConstants.Actors.TERMINAL);
     }
 
     private AnimatedImage createAnimationImage(String name) {
@@ -97,7 +101,8 @@ public class ActorFactory {
             0.083f, regions, Animation.PlayMode.NORMAL
         );
 
-        return new AnimatedImage(animation);
+        AnimatedImage animatedImage = new AnimatedImage(animation);
+        return animatedImage;
     }
 
 

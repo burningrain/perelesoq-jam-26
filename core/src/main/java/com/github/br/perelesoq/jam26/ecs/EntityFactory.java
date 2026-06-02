@@ -7,10 +7,12 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.github.br.perelesoq.jam26.Constants;
 import com.github.br.perelesoq.jam26.animation.AnimationFactory;
 import com.github.br.perelesoq.jam26.ecs.component.*;
+import com.github.br.perelesoq.jam26.ecs.component.physics.Hitbox;
+import com.github.br.perelesoq.jam26.ecs.component.physics.PhysicsComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
+import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 
 public class EntityFactory extends BaseSystem {
 
@@ -45,8 +47,7 @@ public class EntityFactory extends BaseSystem {
         transformComponent.y = y;
 
         PhysicsComponent physicsComponent = physicsMapper.get(id);
-        physicsComponent.width = 32f;
-        physicsComponent.height = 32f;
+        physicsComponent.hitbox = new Hitbox(32f, 32f, 9f, 10f, 4f, 2f);
         physicsComponent.useGravity = true;
 
         AnimationComponent animationComponent = animationMapper.get(id);
@@ -54,7 +55,7 @@ public class EntityFactory extends BaseSystem {
 
         RenderComponent renderComponent = renderMapper.get(id);
         renderComponent.textureRegion = animationComponent.simpleAnimationComponent.animatorDynamicPart.currentFrame;
-        renderComponent.layer = Constants.GAME_OBJECTS_LAYER;
+        renderComponent.layer = TiledUiConstants.Layers.GAME_OBJECTS_LAYER;
 
         HeroSingletonComponent.INSTANCE.playerId = id; //TODO кривота
 
@@ -70,8 +71,7 @@ public class EntityFactory extends BaseSystem {
         transform.y = y;
 
         PhysicsComponent physics = edit.create(PhysicsComponent.class);
-        physics.width = width;
-        physics.height = height;
+        physics.hitbox = new Hitbox(width, height, 0f, 0f, 0f, 0f);
         physics.useGravity = false; // СТЕНЫ НЕ ПАДАЮТ
 
         edit.create(VelocityComponent.class);
@@ -86,9 +86,9 @@ public class EntityFactory extends BaseSystem {
     }
 
     public void createGameObjects(TiledMap tiledMap) {
-        MapLayer gameObjects = tiledMap.getLayers().get(Constants.GAME_OBJECTS_LAYER);
+        MapLayer gameObjects = tiledMap.getLayers().get(TiledUiConstants.Layers.GAME_OBJECTS_LAYER);
         if (gameObjects == null) {
-            throw new GdxRuntimeException("entity layer [" + Constants.GAME_OBJECTS_LAYER +
+            throw new GdxRuntimeException("entity layer [" + TiledUiConstants.Layers.GAME_OBJECTS_LAYER +
                 "] is not found. Create layer in Tiled Map");
         }
 
@@ -99,8 +99,8 @@ public class EntityFactory extends BaseSystem {
             MapProperties properties = object.getProperties();
             float x = properties.get("x", float.class);
             float y = properties.get("y", float.class);
-            float width = properties.get("width", Float.class);
-            float height = properties.get("height", Float.class);
+            float width = properties.get("width", float.class);
+            float height = properties.get("height", float.class);
 
             switch (name) {
                 case "player":

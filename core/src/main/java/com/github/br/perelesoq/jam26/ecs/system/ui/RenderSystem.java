@@ -12,14 +12,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.br.perelesoq.jam26.Constants;
-import com.github.br.perelesoq.jam26.ecs.component.AnimationComponent;
-import com.github.br.perelesoq.jam26.ecs.component.PhysicsComponent;
 import com.github.br.perelesoq.jam26.ecs.component.RenderComponent;
 import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
 import com.github.br.perelesoq.jam26.render.ActorFactory;
 import com.github.br.perelesoq.jam26.render.CustomOrthogonalTiledMapRenderer;
+import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 import com.github.br.perelesoq.jam26.render.ui.ObjectLayerObjectRenderInterceptor;
 
 public class RenderSystem extends BaseSystem {
@@ -32,8 +30,6 @@ public class RenderSystem extends BaseSystem {
     // Маппер для быстрого доступа к компонентам
     protected ComponentMapper<TransformComponent> transformMapper;
     protected ComponentMapper<RenderComponent> renderMapper;
-    protected ComponentMapper<AnimationComponent> animMapper;
-    protected ComponentMapper<PhysicsComponent> physicsMapper;
 
     private final ObjectLayerObjectRenderInterceptorImpl postRenderSupplier = new ObjectLayerObjectRenderInterceptorImpl();
 
@@ -43,7 +39,8 @@ public class RenderSystem extends BaseSystem {
 
         @Override
         public boolean isIgnoreLayer(String name) {
-            return Constants.GAME_OBJECTS_LAYER.equals(name);
+            return TiledUiConstants.Layers.GAME_OBJECTS_LAYER.equals(name) ||
+                TiledUiConstants.Layers.TRIGGERS_LAYER.equals(name);
         }
 
         @Override
@@ -58,20 +55,26 @@ public class RenderSystem extends BaseSystem {
                 int entityId = intBag.get(i);
                 RenderComponent renderComponent = renderMapper.get(entityId);
                 TransformComponent transformComponent = transformMapper.get(entityId);
-                AnimationComponent animationComponent = animMapper.get(entityId);
-                PhysicsComponent physicsComponent = physicsMapper.get(entityId);
 
-                TextureRegion frame = animationComponent.simpleAnimationComponent.animatorDynamicPart.currentFrame;
-                boolean isFlipX = animationComponent.simpleAnimationComponent.animatorDynamicPart.isFlipX;
-                boolean isFlipY = animationComponent.simpleAnimationComponent.animatorDynamicPart.isFlipY;
+                TextureRegion frame = renderComponent.textureRegion;
+                boolean isFlipX = transformComponent.flipX;
+                boolean isFlipY = transformComponent.flipY;
+
+                float ox = Float.isNaN(transformComponent.originX) ? frame.getRegionWidth() / 2f : transformComponent.originX;
+                float oy = Float.isNaN(transformComponent.originY) ? frame.getRegionHeight() / 2f : transformComponent.originY;
 
                 // Вызываем метод батча, передавая туда параметры региона
                 batch.draw(
                     frame.getTexture(),                      // Наша общая текстура-атлас
-                    transformComponent.x,                             // Позиция X на экране
-                    transformComponent.y,                             // Позиция Y на экране
-                    physicsComponent.width,                           // Ширина на экране (например, 32f)
-                    physicsComponent.height,                          // Высота на экране (например, 32f)
+                    transformComponent.x,                    // Позиция X на экране
+                    transformComponent.y,                    // Позиция Y на экране
+                    ox,
+                    oy,
+                    frame.getRegionWidth(),                  // Ширина на экране (например, 32f)
+                    frame.getRegionHeight(),                 // Высота на экране (например, 32f)
+                    transformComponent.scaleX,
+                    transformComponent.scaleY,
+                    transformComponent.rotation,
                     frame.getRegionX(),                      // srcX: пиксельный X левого верхнего угла кадра в атласе
                     frame.getRegionY(),                      // srcY: пиксельный Y левого верхнего угла кадра в атласе
                     frame.getRegionWidth(),                  // srcWidth: пиксельная ширина кадра в атласе
@@ -102,6 +105,10 @@ public class RenderSystem extends BaseSystem {
 
     public RenderSystem(ActorFactory actorFactory, Viewport viewport, TiledMap map, float unitScale) {
         this.renderer = new CustomOrthogonalTiledMapRenderer(actorFactory, viewport, map, unitScale, postRenderSupplier);
+    }
+
+    public CustomOrthogonalTiledMapRenderer getRenderer() {
+        return renderer;
     }
 
     @Override

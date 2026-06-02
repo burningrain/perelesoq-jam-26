@@ -10,14 +10,10 @@ public class AnimatorDynamicPart {
     // A variable for tracking elapsed time for the animation
     public float stateTime = 0;
     public ModifiedAnimation animation;
-    public boolean isFlipX = false;
-    public boolean isFlipY = false;
 
     public void reset(AnimatorStaticPart animatorStaticPart) {
         stateTime = 0;
         isStopped = true;
-        isFlipX = false;
-        isFlipY = false;
         if(this.animation == null) {
             // первоначальная инициализация
             this.animation = new ModifiedAnimation(animatorStaticPart.frameDuration, animatorStaticPart.keyFrames, animatorStaticPart.playMode);
@@ -25,7 +21,6 @@ public class AnimatorDynamicPart {
             this.animation.reset(animatorStaticPart.frameDuration, animatorStaticPart.keyFrames, animatorStaticPart.playMode);
         }
         this.currentFrame = animation.getKeyFrame(stateTime, animatorStaticPart.looping);
-        this.currentFrame.flip(isFlipX, isFlipY);
     }
 
 }

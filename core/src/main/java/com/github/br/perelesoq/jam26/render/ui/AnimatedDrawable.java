@@ -12,6 +12,10 @@ public class AnimatedDrawable extends TextureRegionDrawable {
     private float stateTime = 0;
     private boolean isPaused = false;
 
+    public Animation<TextureRegion> getAnimation() {
+        return animation;
+    }
+
     public AnimatedDrawable(Animation<TextureRegion> animation) {
         this.animation = animation;
         TextureRegion key = animation.getKeyFrame(0);

@@ -6,11 +6,11 @@ import com.github.br.perelesoq.jam26.ecs.component.CharacterStateComponent;
 import com.github.br.perelesoq.jam26.ecs.component.JumpControlComponent;
 import com.github.br.perelesoq.jam26.ecs.component.VelocityComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.component.trigger.InteractionIntentComponent;
 import de.golfgl.gdx.controllers.mapping.MappedController;
 
 public class InputSystemImpl extends AbstractInputSystem {
 
-    private static final float RUN_SPEED = 90f; // 40f слишком медленно для экрана 320, персонаж будет ползти
     private ComponentMapper<VelocityComponent> mVelocity;
     private ComponentMapper<JumpControlComponent> mJumpControl;
     private ComponentMapper<CharacterStateComponent> mState;
@@ -54,16 +54,16 @@ public class InputSystemImpl extends AbstractInputSystem {
         } else {
             moveX = 0f;
         }
-        velocity.x = moveX * RUN_SPEED;
+        velocity.x = moveX * HeroSingletonComponent.INSTANCE.RUN_SPEED;
 
         // --- 2. ОБРАБОТКА СТАРТА ПРЫЖКА (ПРИ УДЕРЖАНИИ ИЛИ КЛИКЕ) ---
 
-// Если мы физически на земле, возвращаем готовность к прыжку
+        // Если мы физически на земле, возвращаем готовность к прыжку
         if (state.onGround) {
             jumpCtrl.isJumpReady = true;
         }
 
-// Проверяем обычное зажатие (Pressed), а не одиночный клик (JustPressed)
+        // Проверяем обычное зажатие (Pressed), а не одиночный клик (JustPressed)
         if (inputRegistry.isActionPressed(GameAction.JUMP, mappedController)) {
 
             // Если кнопка зажата, мы на земле и прыжок готов — стартуем!
@@ -80,5 +80,15 @@ public class InputSystemImpl extends AbstractInputSystem {
             // Если игрок физически отпустил кнопку посреди полета — обрубаем Марио-взлет
             jumpCtrl.isJumping = false;
         }
+
+        // Проверяем нажатие взаимодействия
+        if (inputRegistry.isActionJustPressed(GameAction.EXECUTE, mappedController)) {
+            // Взводим намерение взаимодействовать в этом кадре
+            world.edit(entityId).create(InteractionIntentComponent.class);
+        } else {
+            // Если кнопка не нажата, обязательно убираем компонент, чтобы намерение не залипло
+            world.edit(entityId).remove(InteractionIntentComponent.class);
+        }
     }
+
 }
