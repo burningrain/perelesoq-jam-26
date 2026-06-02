@@ -1,8 +1,8 @@
 package com.github.br.perelesoq.jam26.screen;
 
-import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -32,11 +32,14 @@ public class Level1ScreenLoader implements AssetsLoader {
             }
         );
         assetManager.load(Resources.Atlases.GAME_OBJECTS, TextureAtlas.class, gameObjectsAtlasParams);
+
+        assetManager.load(Resources.Sound.SIREN, Sound.class);
     }
 
     @Override
     public void unloadAssets(AssetManager assetManager) {
         assetManager.unload(Resources.Tiled.LEVEL_1_ENTRANCE);
+        assetManager.unload(Resources.Sound.SIREN);
     }
 
 }

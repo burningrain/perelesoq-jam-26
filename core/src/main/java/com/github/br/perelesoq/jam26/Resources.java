@@ -13,6 +13,10 @@ public interface Resources {
         String MAIN_SCREEN_THEME = "music/8_Bit_Video_Game_Fight_Music_by_bone666138.mp3";
     }
 
+    interface Sound {
+        String SIREN = "sfx/Freesound _alarmamtest1_by_jilgueroo.mp3";
+    }
+
     interface Tiled {
 
         String LEVEL_1_ENTRANCE = "tiled-packed/entrance.tmx";

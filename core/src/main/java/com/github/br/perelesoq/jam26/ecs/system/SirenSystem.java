@@ -3,74 +3,93 @@ package com.github.br.perelesoq.jam26.ecs.system;
 import com.artemis.BaseSystem;
 import com.artemis.ComponentMapper;
 import com.badlogic.gdx.math.MathUtils;
+import com.github.br.perelesoq.jam26.Resources;
+import com.github.br.perelesoq.jam26.ecs.component.audio.PlaySoundComponent;
 import com.github.br.perelesoq.jam26.ecs.component.render.ChangeRenderLayerComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.SirenSingletonComponent;
+import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 
 public class SirenSystem extends BaseSystem {
 
-    // НАСТРОЙКИ СИРЕНЫ
-    private final String TARGET_LAYER = "back_blue";
-    private final float BLINK_FREQUENCY = 0.5f; // Сколько полных циклов (туда-обратно) происходит за 1 секунду
-
     protected ComponentMapper<ChangeRenderLayerComponent> mLayerChange;
+    protected ComponentMapper<PlaySoundComponent> mPlaySound; // Маппер для создания запросов на звук
 
+    // Храним ID единственной долгоживущей сущности-процесса сирены
     private int sirenLayerEntityId = -1;
+
+    // Счетчик времени для расчета синусоиды мерцания
     private float totalTime = 0f;
+
+    // Таймер для отслеживания момента проигрывания звука
+    private float soundTimer = 0f;
+
+    // НАСТРОЙКИ СИРЕНЫ
+    private static final float BLINK_FREQUENCY = 1.0f; // Частота: 1 полный цикл (туда-обратно) в секунду
 
     @Override
     protected void processSystem() {
         // Читаем глобальное состояние: активна ли тревога прямо сейчас
         boolean isSirenEnabled = SirenSingletonComponent.INSTANCE.isActive;
 
+        // ПРОВЕРКА ВАЛИДНОСТИ: существует ли сущность в ECS мире прямо сейчас
+        boolean isEntityActive = sirenLayerEntityId != -1 && world.getEntityManager().isActive(sirenLayerEntityId);
+
         // --- ЛОГИКА ВЫКЛЮЧЕНИЯ СИРЕНЫ ---
         if (!isSirenEnabled) {
-            // Если сирена выключена, но сущность в мире еще существует — удаляем её
-            if (sirenLayerEntityId != -1) {
-                if (world.getEntityManager().isActive(sirenLayerEntityId)) {
-                    // Создаем финальную разовую команду для полного скрытия слоя перед удалением
-                    // (или можно оставить ее видимой, если это дефолтный слой, но для сирены лучше скрыть)
-                    ChangeRenderLayerComponent cmd = mLayerChange.get(sirenLayerEntityId);
-                    if (cmd != null) {
-                        cmd.opacity = 0f;
-                        cmd.isDirty = true; // Принудительно заставляем рендер скрыть слой в последний раз
-                    }
-
-                    // Удаляем сущность. Компонент автоматически вернется в пул Artemis
-                    world.delete(sirenLayerEntityId);
+            if (isEntityActive) {
+                ChangeRenderLayerComponent cmd = mLayerChange.get(sirenLayerEntityId);
+                if (cmd != null) {
+                    cmd.opacity = 0f;
+                    cmd.isVisible = false;
+                    cmd.isDirty = true;
                 }
-
-                // Сбрасываем локальное состояние системы
-                sirenLayerEntityId = -1;
-                totalTime = 0f;
+                world.delete(sirenLayerEntityId);
             }
+
+            sirenLayerEntityId = -1;
+            totalTime = 0f;
+            soundTimer = 0f; // Сбрасываем звуковой таймер
             return;
         }
 
         // --- ЛОГИКА ВКЛЮЧЕНИЯ И ИНИЦИАЛИЗАЦИИ СИРЕНЫ ---
-        // Если сирена включена, но сущности-процесса еще нет в мире — создаем ОДИН раз
-        if (sirenLayerEntityId == -1 || !world.getEntityManager().isActive(sirenLayerEntityId)) {
+        if (!isEntityActive) {
             sirenLayerEntityId = world.create();
             ChangeRenderLayerComponent cmd = mLayerChange.create(sirenLayerEntityId);
-            cmd.layerName = TARGET_LAYER;
+            cmd.layerName = TiledUiConstants.Layers.BACK_BLUE;
+            cmd.isVisible = true;
             cmd.opacity = 0f;
-            cmd.isDirty = true; // Взводим флаг для первой обработки рендерером
+            cmd.isDirty = true;
         }
 
         // --- ЛОГИКА ПЛАВНОЙ ИНТЕРПОЛЯЦИИ (КАЖДЫЙ КАДР) ---
-        totalTime += world.getDelta();
+        float deltaTime = world.getDelta();
+        totalTime += deltaTime;
+        soundTimer += deltaTime;
 
-        // Берем синус от времени. MathUtils.PI2 задает полный круг (период в 1 секунду при частоте 1.0)
+        // --- ПРОИГРЫВАНИЕ ЗВУКА СИРЕНЫ (Раз в цикл) ---
+        // Интервал равен 1.0f / BLINK_FREQUENCY (при частоте 1.0f это ровно 1 секунда)
+        float soundInterval = 1.0f / BLINK_FREQUENCY;
+        if (soundTimer >= soundInterval) {
+            soundTimer -= soundInterval; // Мягкий сброс таймера без потери долей секунды
+
+            // Создаем сущность-запрос на звук [10]
+            int soundRequestEntity = world.create();
+            PlaySoundComponent playSound = mPlaySound.create(soundRequestEntity);
+            playSound.soundName = Resources.Sound.SIREN;
+            playSound.volume = 0.7f; // Настраиваемая громкость эффекта сирены [10]
+            playSound.pitch = 1.0f;
+        }
+
+        // --- РАСЧЕТ СИНУСОИДЫ ДЛЯ ВИЗУАЛА ---
         float sinValue = MathUtils.sin(totalTime * BLINK_FREQUENCY * MathUtils.PI2);
-
-        // Переводим математический диапазон синуса [-1, 1] в диапазон прозрачности LibGDX [0, 1]
         float targetAlpha = (sinValue + 1f) / 2f;
 
         ChangeRenderLayerComponent cmd = mLayerChange.get(sirenLayerEntityId);
 
-        // Оптимизация: взводим грязный флаг для RenderSystem ТОЛЬКО если прозрачность реально изменилась
         if (cmd.opacity != targetAlpha) {
             cmd.opacity = targetAlpha;
-            cmd.isDirty = true; // Сигнализируем рендереру, что данные свежие и их нужно применить к карте
+            cmd.isDirty = true;
         }
     }
 }

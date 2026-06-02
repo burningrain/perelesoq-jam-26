@@ -16,6 +16,7 @@ import com.github.br.perelesoq.jam26.ecs.component.singleton.SirenSingletonCompo
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.system.HeroAnimationStateSystem;
 import com.github.br.perelesoq.jam26.ecs.system.SirenSystem;
+import com.github.br.perelesoq.jam26.ecs.system.audio.AudioSystem;
 import com.github.br.perelesoq.jam26.ecs.system.physics.PhysicsSystem;
 import com.github.br.perelesoq.jam26.ecs.system.trigger.TriggerFactory;
 import com.github.br.perelesoq.jam26.ecs.system.trigger.TriggerSystem;
@@ -74,6 +75,7 @@ public class Level1Screen extends AbstractGameScreen {
             .with(new PhysicsSystem())
             .with(new TriggerSystem())
 
+            .with(new AudioSystem(getGameManager().assetManager))
             .with(new SirenSystem())
             .with(new HeroAnimationStateSystem())
 
