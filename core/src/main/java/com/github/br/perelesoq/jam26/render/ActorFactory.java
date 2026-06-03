@@ -87,19 +87,16 @@ public class ActorFactory {
             (1 / 7f), heroTraining, Animation.PlayMode.LOOP_PINGPONG
         );
         AnimatedImage animatedImageHero = new AnimatedImage(animationHero);
-        animatedImageHero.play();
 
         TextureAtlas.AtlasRegion elevatorFront = commonAtlas.findRegion("elevator_front");
         Image imageElevatorFront = new Image(elevatorFront);
 
         Array<TextureAtlas.AtlasRegion> elevatorDoors = commonAtlas.findRegions("elevator_doors");
         Animation<TextureRegion> animation = new Animation<>(
-            0.083f, elevatorDoors, Animation.PlayMode.LOOP_PINGPONG
+            0.083f, elevatorDoors, Animation.PlayMode.NORMAL
         );
 
         AnimatedImage animatedImageElevatorDoors = new AnimatedImage(animation);
-        animatedImageElevatorDoors.play();
-
         return new ElevatorImage(imageElevatorBack, animatedImageHero, animatedImageElevatorDoors, imageElevatorFront);
     }
 

@@ -1,5 +1,6 @@
 package com.github.br.perelesoq.jam26.screen;
 
+import com.artemis.Entity;
 import com.artemis.World;
 import com.artemis.WorldConfiguration;
 import com.artemis.WorldConfigurationBuilder;
@@ -7,29 +8,38 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.github.ashvard.gdx.simple.animation.SimpleAnimation;
 import com.github.br.perelesoq.jam26.Constants;
 import com.github.br.perelesoq.jam26.Resources;
 import com.github.br.perelesoq.jam26.dialogs.DialogFactory;
 import com.github.br.perelesoq.jam26.ecs.EntityFactory;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.cinematic.CinematicSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
-import com.github.br.perelesoq.jam26.ecs.component.singleton.SirenSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.cinematic.DelayStep;
+import com.github.br.perelesoq.jam26.ecs.component.ui.render.RenderComponent;
 import com.github.br.perelesoq.jam26.ecs.system.DoorSystem;
-import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogViewAvatarFactory;
-import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogueSystem;
 import com.github.br.perelesoq.jam26.ecs.system.HeroAnimationStateSystem;
+import com.github.br.perelesoq.jam26.ecs.system.InputSystemImpl;
 import com.github.br.perelesoq.jam26.ecs.system.SirenSystem;
 import com.github.br.perelesoq.jam26.ecs.system.base.audio.AudioSystem;
+import com.github.br.perelesoq.jam26.ecs.system.base.cinematic.CinematicSystem;
 import com.github.br.perelesoq.jam26.ecs.system.base.physics.PhysicsSystem;
 import com.github.br.perelesoq.jam26.ecs.system.base.trigger.TriggerFactory;
 import com.github.br.perelesoq.jam26.ecs.system.base.trigger.TriggerSystem;
-import com.github.br.perelesoq.jam26.ecs.system.InputSystemImpl;
 import com.github.br.perelesoq.jam26.ecs.system.base.ui.AnimationSystem;
 import com.github.br.perelesoq.jam26.ecs.system.base.ui.CameraSystem;
 import com.github.br.perelesoq.jam26.ecs.system.base.ui.RenderSystem;
+import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogViewAvatarFactory;
+import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogueSystem;
 import com.github.br.perelesoq.jam26.render.ActorFactory;
+import com.github.br.perelesoq.jam26.render.ElevatorImage;
+import com.github.br.perelesoq.jam26.render.TiledUiConstants;
+import com.github.br.perelesoq.jam26.render.ui.AnimatedImage;
+import com.github.br.perelesoq.jam26.render.ui.CustomOrthogonalTiledMapRenderer;
 import com.github.br.perelesoq.jam26.structure.screen.AbstractGameScreen;
 
 public class Level1Screen extends AbstractGameScreen {
@@ -63,6 +73,116 @@ public class Level1Screen extends AbstractGameScreen {
 
         TriggerFactory system = world.getSystem(TriggerFactory.class);
         system.createGameObjects(tiledMap);
+
+        startCinematic();
+    }
+
+    private void startCinematic() {
+        Array<CinematicSingletonComponent.CinematicStep> script = new Array<>();
+        script.add(new CinematicSingletonComponent.CinematicStep() {
+            @Override
+            public void onStart(World world) {
+                Entity heroEntity = world.getEntity(HeroSingletonComponent.INSTANCE.playerId);
+                RenderComponent component = heroEntity.getComponent(RenderComponent.class);
+                component.isVisible = false;
+            }
+
+            @Override
+            public boolean onUpdate(World world, float delta) {
+                return true; // Мгновенный шаг, сразу переходим дальше
+            }
+        });
+        script.add(new CinematicSingletonComponent.CinematicStep() {
+
+            private ElevatorImage elevatorImage;
+
+            @Override
+            public void onStart(World world) {
+                RenderSystem system = world.getSystem(RenderSystem.class);
+                CustomOrthogonalTiledMapRenderer renderer = system.getRenderer();
+                elevatorImage = renderer.getActor(
+                    TiledUiConstants.Layers.ACTORS_LAYER,
+                    TiledUiConstants.Actors.ELEVATOR,
+                    ElevatorImage.class
+                );
+            }
+
+            @Override
+            public boolean onUpdate(World world, float delta) {
+                float y = elevatorImage.getY();
+                System.out.println(y);
+                if (y <= 16) {
+                    return true;
+                }
+                elevatorImage.setY(elevatorImage.getY() - delta * 25);
+                return false;
+            }
+        });
+        script.add(new CinematicSingletonComponent.CinematicStep() {
+
+            private ElevatorImage elevatorImage;
+
+            @Override
+            public void onStart(World world) {
+                RenderSystem system = world.getSystem(RenderSystem.class);
+                CustomOrthogonalTiledMapRenderer renderer = system.getRenderer();
+                elevatorImage = renderer.getActor(
+                    TiledUiConstants.Layers.ACTORS_LAYER,
+                    TiledUiConstants.Actors.ELEVATOR,
+                    ElevatorImage.class
+                );
+
+                elevatorImage.getAnimationHero().play();
+                elevatorImage.getDoors().play();
+            }
+
+            @Override
+            public boolean onUpdate(World world, float delta) {
+                AnimatedImage doors = elevatorImage.getDoors();
+                return doors.isAnimationEnd();
+            }
+        });
+        script.add(new DelayStep(2f));
+        script.add(new CinematicSingletonComponent.CinematicStep() {
+
+            private ElevatorImage elevatorImage;
+
+            @Override
+            public void onStart(World world) {
+                RenderSystem system = world.getSystem(RenderSystem.class);
+                CustomOrthogonalTiledMapRenderer renderer = system.getRenderer();
+                elevatorImage = renderer.getActor(
+                    TiledUiConstants.Layers.ACTORS_LAYER,
+                    TiledUiConstants.Actors.ELEVATOR,
+                    ElevatorImage.class
+                );
+
+                AnimatedImage animationHero = elevatorImage.getAnimationHero();
+                animationHero.reset();
+                animationHero.setVisible(false);
+            }
+
+            @Override
+            public boolean onUpdate(World world, float delta) {
+                return true;
+            }
+        });
+
+        script.add(new CinematicSingletonComponent.CinematicStep() {
+            @Override
+            public void onStart(World world) {
+                Entity heroEntity = world.getEntity(HeroSingletonComponent.INSTANCE.playerId);
+                RenderComponent component = heroEntity.getComponent(RenderComponent.class);
+                component.isVisible = true;
+            }
+
+            @Override
+            public boolean onUpdate(World world, float delta) {
+                return true; // Мгновенный шаг, сразу переходим дальше
+            }
+        });
+
+        CinematicSingletonComponent.INSTANCE.start(script);
     }
 
     private World createEcsEngine(AssetManager assetManager) {
@@ -92,6 +212,7 @@ public class Level1Screen extends AbstractGameScreen {
             .with(new DialogueSystem(inputSystem, renderSystem, new DialogViewAvatarFactory(getGameManager().assetManager)))
 
             // --- 2. ФАЗА ИГРОВОЙ ЛОГИКИ И СОСТОЯНИЙ ---
+            .with(new CinematicSystem())
             .with(new SirenSystem())                  // Считает альфу и звук до симуляции физики и рендера
             .with(new HeroAnimationStateSystem())     // Определяет, бежит персонаж или прыгает, выставляя флаги флипа
             .with(new DoorSystem())                   // Читает намерения, запускает FSM дверей и вовремя удаляет их физику
@@ -121,14 +242,15 @@ public class Level1Screen extends AbstractGameScreen {
     @Override
     public void render(float delta) {
         boolean isDialogueActive = DialogueSingletonComponent.INSTANCE.isActive;
+        boolean isCinematicActive = CinematicSingletonComponent.INSTANCE.isActive;
+        // Игрок теряет управление, если идет диалог ИЛИ кат-сцена
+        boolean shouldPauseGameplay = isDialogueActive || isCinematicActive;
+
         // ЗАМОРОЗКА/РАЗМОРОЗКА СИСТЕМ ПРИ АКТИВАЦИИ ОКНА ДИАЛОГА
         // Физика, триггеры и ввод игрока НЕ должны работать во время диалога
-        world.getSystem(PhysicsSystem.class).setEnabled(!isDialogueActive);
-        world.getSystem(TriggerSystem.class).setEnabled(!isDialogueActive);
-        // Если у вас в InputSystemImpl зашито перемещение героя, её тоже выключаем:
-        world.getSystem(InputSystemImpl.class).setGameplayInputPaused(isDialogueActive);
-        // Сирена, анимации и рендеринг ДОЛЖНЫ работать всегда (чтобы окно диалога плавно появлялось)
-        //world.getSystem(SirenSystem.class).setEnabled(!isDialogueActive);
+        world.getSystem(PhysicsSystem.class).setEnabled(!shouldPauseGameplay);
+        world.getSystem(TriggerSystem.class).setEnabled(!shouldPauseGameplay);
+        world.getSystem(InputSystemImpl.class).setGameplayInputPaused(shouldPauseGameplay);
 
         // Запускаем тик ECS-мира
         world.setDelta(delta);

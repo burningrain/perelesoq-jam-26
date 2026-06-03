@@ -5,11 +5,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class RenderComponent extends PooledComponent {
 
+    public boolean isVisible = true;
     public String layer;
     public transient TextureRegion textureRegion;
 
     @Override
     protected void reset() {
+        isVisible = true;
         layer = null;
         textureRegion = null;
     }

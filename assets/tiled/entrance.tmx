@@ -19,7 +19,7 @@
  <objectgroup color="#aaff7f" id="5" name="actors">
   <object id="6" name="controller" gid="9" x="267.75" y="165.5" width="10" height="21"/>
   <object id="7" name="terminal" gid="10" x="103" y="165" width="14" height="24"/>
-  <object id="8" name="elevator" gid="8" x="8.5" y="164.25" width="44" height="53"/>
+  <object id="8" name="elevator" gid="8" x="8.5" y="60" width="44" height="53"/>
   <object id="9" name="camera" gid="6" x="294.5" y="110.25" width="22" height="36"/>
  </objectgroup>
  <objectgroup color="#ff007f" id="6" name="game_objects">
@@ -27,7 +27,7 @@
   <object id="11" name="wall" x="0.375" y="0.42045" width="319.75" height="6.4091"/>
   <object id="12" name="wall" x="315.875" y="7.79545" width="4.25" height="111.659"/>
   <object id="13" name="wall" x="0.875" y="8.0455" width="4.25" height="155.784"/>
-  <object id="14" name="player" x="13.25" y="25.625" width="32" height="32"/>
+  <object id="14" name="player" x="14.75" y="130.375" width="32" height="32"/>
   <object id="17" name="wall" x="294.125" y="74.75" width="20.5" height="35"/>
   <object id="26" name="door" gid="7" x="305" y="164" width="15" height="43">
    <properties>

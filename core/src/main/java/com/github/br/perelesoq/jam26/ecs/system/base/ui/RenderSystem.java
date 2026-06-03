@@ -60,6 +60,10 @@ public class RenderSystem extends BaseSystem {
             for (int i = 0; i < size; i++) {
                 int entityId = intBag.get(i);
                 RenderComponent renderComponent = renderMapper.get(entityId);
+                if (!renderComponent.isVisible) {
+                    continue;
+                }
+
                 TransformComponent transformComponent = transformMapper.get(entityId);
 
                 TextureRegion frame = renderComponent.textureRegion;

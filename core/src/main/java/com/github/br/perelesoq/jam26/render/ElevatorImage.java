@@ -58,4 +58,8 @@ public class ElevatorImage extends Group {
         return doors;
     }
 
+    public AnimatedImage getAnimationHero() {
+        return animationHero;
+    }
+
 }
