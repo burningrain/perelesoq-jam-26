@@ -22,16 +22,12 @@ public class DialogFactory {
                 "Эй, ты там, вижу тебя. Здравствуй!"
             ));
             add(new DialogueSingletonComponent.Phrase(
-                Resources.Atlases.Objects.AVATAR_HERO,
-                "Привет. Можешь отключить гравитацию?"
-            ));
-            add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
                 "Можешь помахать рукой в камеру? Мне на память!"
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_HERO,
-                "Не буду."
+                "Привет. Не буду. Можешь отключить гравитацию?"
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,

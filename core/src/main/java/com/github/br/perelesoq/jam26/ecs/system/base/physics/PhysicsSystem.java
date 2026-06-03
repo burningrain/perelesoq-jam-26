@@ -99,12 +99,26 @@ public class PhysicsSystem extends IteratingSystem {
         float actualOffsetX = transform.flipX ? hitbox.paddingRight : hitbox.paddingLeft;
         float actualOffsetY = transform.flipY ? hitbox.paddingTop : hitbox.paddingBottom;
 
-        // Синхронизируем положение хитбокса в jbump (на случай, если flip изменился на этом кадре)
-        float currentX = transform.x + actualOffsetX;
-        float currentY = transform.y + actualOffsetY;
-        jbumpWorld.update(physics.item, currentX, currentY);
+        // --- БЕЗОПАСНАЯ СИНХРОНИЗАЦИЯ FLIP (ЗАЩИТА ОТ ТЕЛЕПОРТАЦИИ В СТЕНЫ) ---
+        Rect rect = jbumpWorld.getRect(physics.item);
+        if (rect != null) {
+            float desiredHitboxX = transform.x + actualOffsetX;
+            float desiredHitboxY = transform.y + actualOffsetY;
 
-        // 1. ГРАВИТАЦИЯ
+            if (rect.x != desiredHitboxX || rect.y != desiredHitboxY) {
+                Response.Result flipResult = jbumpWorld.move(physics.item, desiredHitboxX, desiredHitboxY, triggerCollisionFilter);
+                // Сразу корректируем трансформ графического холста под результат безопасного смещения
+                transform.x = flipResult.goalX - actualOffsetX;
+                transform.y = flipResult.goalY - actualOffsetY;
+            }
+        }
+
+        // Вытаскиваем точные физические координаты хитбокса после обработки флипа
+        Rect finalRect = jbumpWorld.getRect(physics.item);
+        float currentX = finalRect != null ? finalRect.x : transform.x + actualOffsetX;
+        float currentY = finalRect != null ? finalRect.y : transform.y + actualOffsetY;
+
+// 1. ГРАВИТАЦИЯ
         if (physics.useGravity) {
             if (velocity.y < 0) {
                 float fallMultiplier = 1.9f;
