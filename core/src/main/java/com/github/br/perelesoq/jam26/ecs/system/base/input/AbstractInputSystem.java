@@ -13,6 +13,9 @@ public abstract class AbstractInputSystem extends BaseSystem {
 
     private final GameInputRegistry inputRegistry;
 
+    //  ФЛАГ ПАУЗЫ ДЛЯ ИГРОВОГО ПРОЦЕССА
+    private boolean isGameplayInputPaused = false;
+
     public AbstractInputSystem(GameInputRegistry gameInputRegistry) {
         this.inputRegistry = gameInputRegistry;
         myControllerMapping = new MyControllerMapping();
@@ -40,12 +43,21 @@ public abstract class AbstractInputSystem extends BaseSystem {
         }
     }
 
+    public void setGameplayInputPaused(boolean paused) {
+        this.isGameplayInputPaused = paused;
+    }
+
     @Override
     protected void processSystem() {
+        // Эти две строки теперь гарантированно выполняются КАЖДЫЙ кадр,
+        // сбрасывая Just Pressed состояния геймпада вовремя!
         checkAndRefreshController();
-        inputRegistry.tick(mappedController); // Обновляем Just Pressed состояния для геймпада
+        inputRegistry.tick(mappedController);
 
-        processGameAction(inputRegistry, mappedController);
+        // Логику выполняем только если нет паузы диалога
+        if (!isGameplayInputPaused) {
+            processGameAction(inputRegistry, mappedController);
+        }
     }
 
     protected abstract void processGameAction(GameInputRegistry inputRegistry, MappedController mappedController);
@@ -64,4 +76,11 @@ public abstract class AbstractInputSystem extends BaseSystem {
         return false;
     }
 
+    public GameInputRegistry getInputRegistry() {
+        return inputRegistry;
+    }
+
+    public MappedController getController() {
+        return mappedController;
+    }
 }

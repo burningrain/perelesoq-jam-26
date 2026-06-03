@@ -126,7 +126,7 @@ public class Level1Screen extends AbstractGameScreen {
         world.getSystem(PhysicsSystem.class).setEnabled(!isDialogueActive);
         world.getSystem(TriggerSystem.class).setEnabled(!isDialogueActive);
         // Если у вас в InputSystemImpl зашито перемещение героя, её тоже выключаем:
-        world.getSystem(InputSystemImpl.class).setEnabled(!isDialogueActive);
+        world.getSystem(InputSystemImpl.class).setGameplayInputPaused(isDialogueActive);
         // Сирена, анимации и рендеринг ДОЛЖНЫ работать всегда (чтобы окно диалога плавно появлялось)
         //world.getSystem(SirenSystem.class).setEnabled(!isDialogueActive);
 
