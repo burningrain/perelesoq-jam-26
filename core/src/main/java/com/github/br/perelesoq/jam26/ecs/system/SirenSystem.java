@@ -7,31 +7,31 @@ import com.github.br.perelesoq.jam26.Resources;
 import com.github.br.perelesoq.jam26.ecs.component.audio.PlaySoundComponent;
 import com.github.br.perelesoq.jam26.ecs.component.render.ChangeRenderLayerComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.SirenSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.system.base.ui.CameraSystem;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 
 public class SirenSystem extends BaseSystem {
 
     protected ComponentMapper<ChangeRenderLayerComponent> mLayerChange;
-    protected ComponentMapper<PlaySoundComponent> mPlaySound; // Маппер для создания запросов на звук
+    protected ComponentMapper<PlaySoundComponent> mPlaySound;
 
-    // Храним ID единственной долгоживущей сущности-процесса сирены
     private int sirenLayerEntityId = -1;
-
-    // Счетчик времени для расчета синусоиды мерцания
     private float totalTime = 0f;
-
-    // Таймер для отслеживания момента проигрывания звука
     private float soundTimer = 0f;
 
+    // --- НОВЫЕ ПОЛЯ ДЛЯ ЗАДЕРЖКИ ТРЯСКИ ---
+    private float shakeDelayTimer = -1f; // Таймер задержки (-1 означает, что ожидания нет)
+
     // НАСТРОЙКИ СИРЕНЫ
-    private static final float BLINK_FREQUENCY = 1.0f; // Частота: 1 полный цикл (туда-обратно) в секунду
+    private static final float BLINK_FREQUENCY = 1.0f; // Частота: 1 полный цикл в секунду
+
+    // Длительность звука сирены. Измерьте ваш ассет siren.mp3/wav и вставьте точное время в секундах!
+    // Например, если аудио идет 0.6 секунды, ставим 0.6f.
+    private static final float SOUND_DURATION = 2.0f;
 
     @Override
     protected void processSystem() {
-        // Читаем глобальное состояние: активна ли тревога прямо сейчас
         boolean isSirenEnabled = SirenSingletonComponent.INSTANCE.isActive;
-
-        // ПРОВЕРКА ВАЛИДНОСТИ: существует ли сущность в ECS мире прямо сейчас
         boolean isEntityActive = sirenLayerEntityId != -1 && world.getEntityManager().isActive(sirenLayerEntityId);
 
         // --- ЛОГИКА ВЫКЛЮЧЕНИЯ СИРЕНЫ ---
@@ -48,7 +48,8 @@ public class SirenSystem extends BaseSystem {
 
             sirenLayerEntityId = -1;
             totalTime = 0f;
-            soundTimer = 0f; // Сбрасываем звуковой таймер
+            soundTimer = 0f;
+            shakeDelayTimer = -1f; // Сбрасываем таймер ожидания тряски
             return;
         }
 
@@ -68,17 +69,35 @@ public class SirenSystem extends BaseSystem {
         soundTimer += deltaTime;
 
         // --- ПРОИГРЫВАНИЕ ЗВУКА СИРЕНЫ (Раз в цикл) ---
-        // Интервал равен 1.0f / BLINK_FREQUENCY (при частоте 1.0f это ровно 1 секунда)
         float soundInterval = 1.0f / BLINK_FREQUENCY;
         if (soundTimer >= soundInterval) {
-            soundTimer -= soundInterval; // Мягкий сброс таймера без потери долей секунды
+            soundTimer -= soundInterval;
 
-            // Создаем сущность-запрос на звук [10]
+            // 1. Создаем сущность-запрос на звук [10]
             int soundRequestEntity = world.create();
             PlaySoundComponent playSound = mPlaySound.create(soundRequestEntity);
             playSound.soundName = Resources.Sound.SIREN;
-            playSound.volume = 0.7f; // Настраиваемая громкость эффекта сирены [10]
+            playSound.volume = 0.7f; // [10]
             playSound.pitch = 1.0f;
+
+            // 2. ВЗВОДИМ ТАЙМЕР ЗАДЕРЖКИ: Тряска начнется ровно через длительность звука
+            shakeDelayTimer = SOUND_DURATION;
+        }
+
+        // --- ЛОГИКА ОТСЧЕТА ЗАДЕРЖКИ И ЗАПУСКА ТРЯСКИ ---
+        if (shakeDelayTimer > 0) {
+            shakeDelayTimer -= deltaTime;
+
+            // Как только таймер дотикал до нуля — значит, звук сирены прямо сейчас завершился!
+            if (shakeDelayTimer <= 0) {
+                shakeDelayTimer = -1f; // Выключаем таймер ожидания
+
+                // Запускаем тряску в CameraSystem
+                CameraSystem camSystem = world.getSystem(CameraSystem.class);
+                if (camSystem != null) {
+                    camSystem.shake(1.5f, 0.35f);
+                }
+            }
         }
 
         // --- РАСЧЕТ СИНУСОИДЫ ДЛЯ ВИЗУАЛА ---
@@ -87,7 +106,7 @@ public class SirenSystem extends BaseSystem {
 
         ChangeRenderLayerComponent cmd = mLayerChange.get(sirenLayerEntityId);
 
-        if (cmd.opacity != targetAlpha) {
+        if (cmd != null && cmd.opacity != targetAlpha) {
             cmd.opacity = targetAlpha;
             cmd.isDirty = true;
         }
