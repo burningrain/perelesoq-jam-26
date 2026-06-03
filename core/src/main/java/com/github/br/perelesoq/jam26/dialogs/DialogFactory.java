@@ -4,19 +4,33 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.github.br.perelesoq.jam26.Resources;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.Controller1SingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.SirenSingletonComponent;
 
 public class DialogFactory {
 
+    public static final String TERMINAL_1 = "terminal_1";
+    public static final String CONTROLLER_1_IS_NOT_ACTIVATED = "controller_1_is_not_activated";
+
     private final ObjectMap<String, Array<DialogueSingletonComponent.Phrase>> dialogMap = new ObjectMap<>();
 
     public DialogFactory() {
         terminal_1();
+        controller_1_is_not_activated();
+    }
+
+    private void controller_1_is_not_activated() {
+        addDialog(CONTROLLER_1_IS_NOT_ACTIVATED, new Array<DialogueSingletonComponent.Phrase>() {{
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_HERO,
+                "Хм...пропуск не работает..."
+            ));
+        }});
     }
 
     private void terminal_1() {
-        addDialog("terminal_1", new Array<DialogueSingletonComponent.Phrase>() {{
+        addDialog(TERMINAL_1, new Array<DialogueSingletonComponent.Phrase>() {{
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
                 "Эй, ты там, вижу тебя. Здравствуй!"
@@ -45,8 +59,8 @@ public class DialogFactory {
                 Resources.Atlases.Objects.AVATAR_HERO,
                 "Сделано.",
                 () -> {
-                SirenSingletonComponent.INSTANCE.isActive = true;
-            }
+                    SirenSingletonComponent.INSTANCE.isActive = true;
+                }
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
@@ -74,7 +88,10 @@ public class DialogFactory {
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
-                "Я начну вести обратный отсчет! А-ХА-ХА-ХА-ХА..."
+                "Я начну вести обратный отсчет! А-ХА-ХА-ХА-ХА...",
+                () -> {
+                    Controller1SingletonComponent.INSTANCE.isActive = true;
+                }
             ));
         }});
     }

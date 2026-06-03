@@ -28,18 +28,24 @@ public class Level1ScreenLoader implements AssetsLoader {
                 new SimpleAnimationFsmLoadedCallback.SimpleAnimationPath(
                     Resources.Animations.HERO_ANIM_FSM,
                     Resources.Animations.HERO
+                ),
+                new SimpleAnimationFsmLoadedCallback.SimpleAnimationPath(
+                    Resources.Animations.DOOR_ANIM_FSM,
+                    Resources.Animations.DOOR
                 )
             }
         );
         assetManager.load(Resources.Atlases.GAME_OBJECTS, TextureAtlas.class, gameObjectsAtlasParams);
 
         assetManager.load(Resources.Sound.SIREN, Sound.class);
+        assetManager.load(Resources.Sound.BIG_DOOR, Sound.class);
     }
 
     @Override
     public void unloadAssets(AssetManager assetManager) {
         assetManager.unload(Resources.Tiled.LEVEL_1_ENTRANCE);
         assetManager.unload(Resources.Sound.SIREN);
+        assetManager.unload(Resources.Sound.BIG_DOOR);
     }
 
 }

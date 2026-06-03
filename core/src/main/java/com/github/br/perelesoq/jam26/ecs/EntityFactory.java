@@ -11,8 +11,9 @@ import com.github.br.perelesoq.jam26.animation.AnimationFactory;
 import com.github.br.perelesoq.jam26.ecs.component.*;
 import com.github.br.perelesoq.jam26.ecs.component.physics.Hitbox;
 import com.github.br.perelesoq.jam26.ecs.component.physics.PhysicsComponent;
-import com.github.br.perelesoq.jam26.ecs.component.render.RenderComponent;
+import com.github.br.perelesoq.jam26.ecs.component.ui.render.RenderComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.component.ui.AnimationComponent;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 
 public class EntityFactory extends BaseSystem {
@@ -63,7 +64,7 @@ public class EntityFactory extends BaseSystem {
         return id;
     }
 
-    public int createStaticObstacle(float x, float y, float width, float height) {
+    public EntityEdit createStaticObstacle(float x, float y, float width, float height) {
         int entityId = world.create();
         EntityEdit edit = world.edit(entityId);
 
@@ -78,7 +79,33 @@ public class EntityFactory extends BaseSystem {
         edit.create(VelocityComponent.class);
         edit.create(CharacterStateComponent.class);
 
-        return entityId;
+        return edit;
+    }
+
+    public void createDoor(MapProperties properties, float x, float y, float width, float height) {
+        EntityEdit doorEntity = createStaticObstacle(x, y, width, height);
+
+        DoorComponent doorComponent = doorEntity.create(DoorComponent.class);
+        doorComponent.doorId = getDoorId(properties);
+
+        AnimationComponent animationComponent = doorEntity.create(AnimationComponent.class);
+        animationComponent.simpleAnimationComponent = AnimationFactory.createDoor();
+
+        RenderComponent renderComponent = doorEntity.create(RenderComponent.class);
+        renderComponent.textureRegion = animationComponent.simpleAnimationComponent.animatorDynamicPart.currentFrame;
+        renderComponent.layer = TiledUiConstants.Layers.GAME_OBJECTS_LAYER;
+    }
+
+    public static Integer getDoorId(MapProperties properties) {
+        String doorId = properties.get("doorId", String.class);
+        if (doorId == null) {
+            throw new GdxRuntimeException("parameter 'doorId' is not found");
+        }
+        return Integer.parseInt(doorId);
+    }
+
+    public static String getDialogId(MapProperties properties) {
+        return properties.get("dialogId", String.class);
     }
 
     @Override
@@ -109,6 +136,9 @@ public class EntityFactory extends BaseSystem {
                     break;
                 case "wall":
                     createStaticObstacle(x, y, width, height);
+                    break;
+                case "door":
+                    createDoor(properties, x, y, width, height);
                     break;
             }
         }

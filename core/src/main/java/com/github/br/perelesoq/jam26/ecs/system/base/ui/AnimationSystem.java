@@ -7,8 +7,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.github.ashvard.gdx.simple.animation.SimpleAnimation;
 import com.github.ashvard.gdx.simple.animation.SimpleAnimationSystem;
-import com.github.br.perelesoq.jam26.ecs.component.AnimationComponent;
-import com.github.br.perelesoq.jam26.ecs.component.render.RenderComponent;
+import com.github.br.perelesoq.jam26.ecs.component.ui.AnimationComponent;
+import com.github.br.perelesoq.jam26.ecs.component.ui.render.RenderComponent;
 
 @All({AnimationComponent.class, RenderComponent.class})
 public class AnimationSystem extends IteratingSystem {

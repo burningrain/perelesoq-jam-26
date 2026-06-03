@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.component;
+package com.github.br.perelesoq.jam26.ecs.component.ui;
 
 import com.artemis.PooledComponent;
 import com.github.ashvard.gdx.simple.animation.component.SimpleAnimationComponent;

@@ -1,0 +1,62 @@
+{
+"name": "door",
+"animators": [
+	{
+		"name": "closed",
+		"frameFrequency": 12,
+		"mode": "NORMAL",
+		"to": 1
+	},
+	{
+		"name": "opened",
+		"frameFrequency": 12,
+		"mode": "NORMAL",
+		"from": 8,
+		"to": 7
+	},
+	{
+		"name": "is_opening",
+		"frameFrequency": 12,
+		"mode": "NORMAL",
+		"from": 1,
+		"to": 8
+	},
+	{
+		"name": "is_closing",
+		"frameFrequency": 12,
+		"mode": "REVERSED",
+		"from": 8,
+		"to": 1
+	}
+],
+"fsm": {
+	"states": [
+		"closed",
+		"opened",
+		"is_opening",
+		"is_closing"
+	],
+	"startState": "closed",
+	"endState": "opened",
+	"transitions": [
+		{
+			"from": "opened",
+			"to": "is_closing",
+			"fsmPredicates": [
+				"isClosing == true"
+			]
+		},
+		{
+			"from": "closed",
+			"to": "is_opening",
+			"fsmPredicates": [
+				"isOpening == true"
+			]
+		}
+	],
+	"variables": {
+		"isClosing": "Boolean",
+		"isOpening": "Boolean"
+	}
+}
+}

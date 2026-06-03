@@ -6,7 +6,7 @@ import com.artemis.systems.IteratingSystem;
 import com.github.ashvard.gdx.simple.animation.fsm.FsmContext;
 import com.github.br.perelesoq.jam26.animation.AnimationFactory;
 import com.github.br.perelesoq.jam26.animation.HeroAnimationType;
-import com.github.br.perelesoq.jam26.ecs.component.AnimationComponent;
+import com.github.br.perelesoq.jam26.ecs.component.ui.AnimationComponent;
 import com.github.br.perelesoq.jam26.ecs.component.CharacterStateComponent;
 import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
 import com.github.br.perelesoq.jam26.ecs.component.VelocityComponent;

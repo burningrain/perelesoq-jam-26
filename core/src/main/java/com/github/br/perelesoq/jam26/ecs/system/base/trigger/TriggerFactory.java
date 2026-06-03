@@ -7,15 +7,16 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.github.br.perelesoq.jam26.Resources;
 import com.github.br.perelesoq.jam26.dialogs.DialogFactory;
+import com.github.br.perelesoq.jam26.ecs.EntityFactory;
 import com.github.br.perelesoq.jam26.ecs.component.CharacterStateComponent;
+import com.github.br.perelesoq.jam26.ecs.component.OpenDoorIntentComponent;
 import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
 import com.github.br.perelesoq.jam26.ecs.component.VelocityComponent;
 import com.github.br.perelesoq.jam26.ecs.component.physics.Hitbox;
 import com.github.br.perelesoq.jam26.ecs.component.physics.PhysicsComponent;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.Controller1SingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.trigger.TriggerComponent;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
@@ -74,6 +75,9 @@ public class TriggerFactory extends BaseSystem {
     }
 
     public void createControllerTrigger(EntityEdit edit, MapProperties properties) {
+        Integer doorId = EntityFactory.getDoorId(properties);
+        String dialogId = EntityFactory.getDialogId(properties);
+
         TriggerComponent trigger = edit.create(TriggerComponent.class);
         trigger.requiresExecution = true;
         trigger.action = new TriggerAction() {
@@ -95,7 +99,19 @@ public class TriggerFactory extends BaseSystem {
 
             @Override
             public void onExecute(int playerEntityId, int triggerEntityId) {
-
+                boolean isActive = Controller1SingletonComponent.INSTANCE.isActive;
+                if (isActive) {
+                    int entityId = world.create();
+                    EntityEdit edit = world.edit(entityId);
+                    OpenDoorIntentComponent openDoorIntentComponent = edit.create(OpenDoorIntentComponent.class);
+                    openDoorIntentComponent.doorId = doorId;
+                    trigger.isNotReused = true;
+                    Controller1SingletonComponent.INSTANCE.isActive = false; // сбрасываем флаг
+                } else {
+                    if (dialogId != null) {
+                        DialogueSingletonComponent.INSTANCE.start(dialogFactory.getDialog(dialogId));
+                    }
+                }
             }
         };
     }
@@ -127,6 +143,7 @@ public class TriggerFactory extends BaseSystem {
                     throw new GdxRuntimeException("terminal property 'dialog' is not found");
                 }
                 DialogueSingletonComponent.INSTANCE.start(dialogFactory.getDialog(dialog));
+                trigger.isNotReused = true;
             }
         };
     }

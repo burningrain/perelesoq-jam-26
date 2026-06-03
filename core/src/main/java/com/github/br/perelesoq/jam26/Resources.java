@@ -15,6 +15,7 @@ public interface Resources {
 
     interface Sound {
         String SIREN = "sfx/Freesound _alarmamtest1_by_jilgueroo.mp3";
+        String BIG_DOOR = "sfx/SFX_Door_Close_Big_wav_by_Paul368.mp3";
     }
 
     interface Tiled {
@@ -35,6 +36,9 @@ public interface Resources {
     interface Animations {
         String HERO_ANIM_FSM = "animations/hero.afsm";
         String HERO = "hero";
+
+        String DOOR_ANIM_FSM = "animations/door.afsm";
+        String DOOR = "door";
     }
 
 }

@@ -3,7 +3,7 @@ package com.github.br.perelesoq.jam26.ecs.system.dialog;
 import com.artemis.BaseSystem;
 import com.artemis.ComponentMapper;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.github.br.perelesoq.jam26.ecs.component.render.ChangeRenderLayerComponent;
+import com.github.br.perelesoq.jam26.ecs.component.ui.render.ChangeRenderLayerComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.system.InputSystemImpl;
 import com.github.br.perelesoq.jam26.ecs.system.base.ui.RenderSystem;

@@ -31,4 +31,17 @@ public class AnimationFactory {
         fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_JUMP, false);
     }
 
+    public static SimpleAnimationComponent createDoor() {
+        FsmContext fsmContext = new FsmContext();
+        resetDoorAnimationContext(fsmContext);
+
+        AnimatorDynamicPart animatorDynamicPart = new AnimatorDynamicPart(/*animatorIdle*/);
+        return new SimpleAnimationComponent(Resources.Animations.DOOR, fsmContext, animatorDynamicPart);
+    }
+
+    private static void resetDoorAnimationContext(FsmContext fsmContext) {
+        fsmContext.insert(DoorAnimationType.TransitionPredicate.IS_CLOSING, false);
+        fsmContext.insert(DoorAnimationType.TransitionPredicate.IS_OPENING, false);
+    }
+
 }

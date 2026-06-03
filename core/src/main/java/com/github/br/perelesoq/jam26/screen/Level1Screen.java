@@ -16,6 +16,7 @@ import com.github.br.perelesoq.jam26.ecs.EntityFactory;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.SirenSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.system.DoorSystem;
 import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogViewAvatarFactory;
 import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogueSystem;
 import com.github.br.perelesoq.jam26.ecs.system.HeroAnimationStateSystem;
@@ -67,6 +68,7 @@ public class Level1Screen extends AbstractGameScreen {
     private World createEcsEngine(AssetManager assetManager) {
         AnimationSystem animationSystem = new AnimationSystem();
         animationSystem.addAnimation(assetManager.<SimpleAnimation>get(Resources.Animations.HERO_ANIM_FSM));
+        animationSystem.addAnimation(assetManager.<SimpleAnimation>get(Resources.Animations.DOOR_ANIM_FSM));
 
         RenderSystem renderSystem = new RenderSystem(
             actorFactory,
@@ -92,6 +94,7 @@ public class Level1Screen extends AbstractGameScreen {
             // --- 2. ФАЗА ИГРОВОЙ ЛОГИКИ И СОСТОЯНИЙ ---
             .with(new SirenSystem())                  // Считает альфу и звук до симуляции физики и рендера
             .with(new HeroAnimationStateSystem())     // Определяет, бежит персонаж или прыгает, выставляя флаги флипа
+            .with(new DoorSystem())                   // Читает намерения, запускает FSM дверей и вовремя удаляет их физику
 
             // --- 3. ФАЗА ФИЗИКИ И ПЕРЕМЕЩЕНИЯ ---
             .with(new PhysicsSystem())                // Рассчитывает движение, двигает хитбокс, обновляет TransformComponent

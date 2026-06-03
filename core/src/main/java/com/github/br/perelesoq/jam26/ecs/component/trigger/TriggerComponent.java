@@ -12,14 +12,14 @@ public class TriggerComponent extends PooledComponent {
 
     // Внутреннее состояние: находится ли сейчас игрок внутри этой зоны
     public boolean isPlayerInside = false;
-    public boolean isOnlyOnce = true;
+    public boolean isNotReused = false;
 
     @Override
     protected void reset() {
         requiresExecution = false;
         isPlayerInside = false;
         action = null;
-        isOnlyOnce = true;
+        isNotReused = false;
     }
 
 }

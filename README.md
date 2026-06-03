@@ -4,11 +4,13 @@
 ## music
 
 game title - [8 Bit Video Game Fight Music](https://freesound.org/people/bone666138/sounds/466998/) / bone666138
+station - [Playground Runaround](https://freesound.org/people/shortiefoeva2/sounds/405220/) / shortiefoeva2
 
 ## sound
 
 siren - [alarm_am_test1](https://freesound.org/people/jilgueroo/sounds/852154/) / jilgueroo
-
+// door - [SFX Door Open.wav](https://freesound.org/people/Paul368/sounds/264061/) / Paul368
+big door - [SFX Door Close Big.wav](https://freesound.org/people/Paul368/sounds/264060/) / Paul368
 
 ## fonts
 

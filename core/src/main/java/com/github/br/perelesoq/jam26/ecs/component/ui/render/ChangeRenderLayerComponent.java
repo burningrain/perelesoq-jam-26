@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.component.render;
+package com.github.br.perelesoq.jam26.ecs.component.ui.render;
 
 import com.artemis.PooledComponent;
 import com.badlogic.gdx.graphics.Color;

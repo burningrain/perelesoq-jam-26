@@ -8,6 +8,7 @@ import com.dongbat.jbump.*;
 import com.github.br.perelesoq.jam26.ecs.component.*;
 import com.github.br.perelesoq.jam26.ecs.component.physics.Hitbox;
 import com.github.br.perelesoq.jam26.ecs.component.physics.PhysicsComponent;
+import com.github.br.perelesoq.jam26.ecs.component.physics.RemoveFromPhysicsWorldComponent;
 import com.github.br.perelesoq.jam26.ecs.component.trigger.OverlappedThisFrameComponent;
 import com.github.br.perelesoq.jam26.ecs.component.trigger.TriggerComponent;
 
@@ -22,6 +23,9 @@ public class PhysicsSystem extends IteratingSystem {
     private ComponentMapper<JumpControlComponent> mJumpControl;
     private ComponentMapper<CharacterStateComponent> mState;
     protected ComponentMapper<TriggerComponent> mTrigger;
+
+    // маппер для компонента удаления
+    private ComponentMapper<RemoveFromPhysicsWorldComponent> mRemovePhysics;
 
     private final CollisionFilter triggerCollisionFilter = new CollisionFilter() {
         @Override
@@ -42,12 +46,28 @@ public class PhysicsSystem extends IteratingSystem {
 
     @Override
     protected void begin() {
-        // Каждый кадр перед симуляцией физики очищаем маркеры наложения у всех объектов,
-        // чтобы jbump заново выставил их актуальное состояние
+        // --- 1. ОЧИСТКА СТАРЫХ МАРКЕРОВ ТРИГГЕРОВ (Ваш текущий код) ---
         IntBag allOverlapped = world.getAspectSubscriptionManager()
             .get(Aspect.all(OverlappedThisFrameComponent.class)).getEntities();
-        for (int i = 0; i < allOverlapped.size(); i++) {
+        for (int i = allOverlapped.size() - 1; i >= 0; i--) {
             world.edit(allOverlapped.get(i)).remove(OverlappedThisFrameComponent.class);
+        }
+
+        // --- 2. НОВАЯ ЛОГИКА: ПРИНУДИТЕЛЬНОЕ УДАЛЕНИЕ ОБЪЕКТОВ ИЗ JBUMP ---
+        IntBag toRemoveBag = world.getAspectSubscriptionManager()
+            .get(Aspect.all(RemoveFromPhysicsWorldComponent.class)).getEntities();
+
+        for (int i = toRemoveBag.size() - 1; i >= 0; i--) {
+            int entityId = toRemoveBag.get(i);
+            RemoveFromPhysicsWorldComponent req = mRemovePhysics.get(entityId);
+
+            if (req != null && req.itemToRemove != null) {
+                // Жестко выкидываем айтем из физического мира, пока он еще существует!
+                jbumpWorld.remove(req.itemToRemove);
+            }
+
+            // Удаляем сущность-запрос, отправляя компонент в пул
+            world.delete(entityId);
         }
     }
 

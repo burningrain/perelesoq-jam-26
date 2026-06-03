@@ -5,7 +5,7 @@ import com.artemis.ComponentMapper;
 import com.badlogic.gdx.math.MathUtils;
 import com.github.br.perelesoq.jam26.Resources;
 import com.github.br.perelesoq.jam26.ecs.component.audio.PlaySoundComponent;
-import com.github.br.perelesoq.jam26.ecs.component.render.ChangeRenderLayerComponent;
+import com.github.br.perelesoq.jam26.ecs.component.ui.render.ChangeRenderLayerComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.SirenSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.system.base.ui.CameraSystem;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
@@ -74,11 +74,7 @@ public class SirenSystem extends BaseSystem {
             soundTimer -= soundInterval;
 
             // 1. Создаем сущность-запрос на звук [10]
-            int soundRequestEntity = world.create();
-            PlaySoundComponent playSound = mPlaySound.create(soundRequestEntity);
-            playSound.soundName = Resources.Sound.SIREN;
-            playSound.volume = 0.7f; // [10]
-            playSound.pitch = 1.0f;
+            createPlaySound();
 
             // 2. ВЗВОДИМ ТАЙМЕР ЗАДЕРЖКИ: Тряска начнется ровно через длительность звука
             shakeDelayTimer = SOUND_DURATION;
@@ -110,5 +106,13 @@ public class SirenSystem extends BaseSystem {
             cmd.opacity = targetAlpha;
             cmd.isDirty = true;
         }
+    }
+
+    private void createPlaySound() {
+        int soundRequestEntity = world.create();
+        PlaySoundComponent playSound = mPlaySound.create(soundRequestEntity);
+        playSound.soundName = Resources.Sound.SIREN;
+        playSound.volume = 0.7f; // [10]
+        playSound.pitch = 1.0f;
     }
 }

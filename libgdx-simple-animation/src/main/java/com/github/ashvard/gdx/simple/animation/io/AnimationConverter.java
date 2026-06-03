@@ -31,9 +31,10 @@ public class AnimationConverter {
     private ObjectMap<String, AnimatorStaticPart> createAnimatorStaticParts(AnimatorDto[] animators, Object[] keyFrames) {
         ObjectMap<String, AnimatorStaticPart> result = new ObjectMap<String, AnimatorStaticPart>();
         for (AnimatorDto animator : animators) {
-            int length = animator.getTo() - animator.getFrom();
+            int length = (animator.getTo() > animator.getFrom())? animator.getTo() - animator.getFrom() : animator.getFrom() - animator.getTo();
             Object[] keyFramesArray = new Object[length];
-            System.arraycopy(keyFrames, animator.getFrom(), keyFramesArray, 0, length);
+            int srcPos = Math.min(animator.getTo(), animator.getFrom());
+            System.arraycopy(keyFrames, srcPos, keyFramesArray, 0, length);
             result.put(animator.getName(), createAnimatorStaticPart(animator, keyFramesArray));
         }
 
