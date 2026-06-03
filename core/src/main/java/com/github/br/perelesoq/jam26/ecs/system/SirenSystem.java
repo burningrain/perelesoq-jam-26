@@ -27,7 +27,7 @@ public class SirenSystem extends BaseSystem {
 
     // Длительность звука сирены. Измерьте ваш ассет siren.mp3/wav и вставьте точное время в секундах!
     // Например, если аудио идет 0.6 секунды, ставим 0.6f.
-    private static final float SOUND_DURATION = 2.0f;
+    private static final float SOUND_DURATION = 0.6f;
 
     @Override
     protected void processSystem() {
