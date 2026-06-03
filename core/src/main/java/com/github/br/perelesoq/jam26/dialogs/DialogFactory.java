@@ -12,10 +12,14 @@ public class DialogFactory {
     private final ObjectMap<String, Array<DialogueSingletonComponent.Phrase>> dialogMap = new ObjectMap<>();
 
     public DialogFactory() {
+        terminal_1();
+    }
+
+    private void terminal_1() {
         addDialog("terminal_1", new Array<DialogueSingletonComponent.Phrase>() {{
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
-                "Эй, ты там, вижу тебя через камеру. Здорова!"
+                "Эй, ты там, вижу тебя. Здравствуй!"
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_HERO,
@@ -23,18 +27,34 @@ public class DialogFactory {
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
-                "Могу уменьшить. Секунду..."
+                "Можешь помахать рукой в камеру? Мне на память!"
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_HERO,
+                "Не буду."
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
-                "Сделано! Заодно разблокировал двери",
+                "Хорошо. Большая кнопка отключает гравитацию."
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_HERO,
+                "Нажал. Ничего не происходит..."
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "Теперь приложи пропуск к терминалу."
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_HERO,
+                "Сделано.",
                 () -> {
                 SirenSingletonComponent.INSTANCE.isActive = true;
             }
             ));
             add(new DialogueSingletonComponent.Phrase(
-                Resources.Atlases.Objects.AVATAR_HERO,
-                "..."
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "Ух ты ж! Ох ты ж! А-ха-ха-ха-ха..."
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_HERO,
@@ -42,11 +62,23 @@ public class DialogFactory {
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
-                "Ну и ну, А-ха-ха-ха!!! Это запустило механизм самоуничтожения модуля станции!"
+                "Твой пропуск активировался в системе."
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_HERO,
+                "И-и-и?!"
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
-                "БЕГИ ОТТУДА! БЫСТРЕЕ!!! А-ха-ха-ха..."
+                "И механизм самоуничтожения модуля станции ТОЖЕ!"
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "Не стой столбом, беги оттуда! СКОРЕЕ!!!"
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "Я начну вести обратный отсчет! А-ХА-ХА-ХА-ХА..."
             ));
         }});
     }

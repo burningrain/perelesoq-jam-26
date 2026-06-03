@@ -1,6 +1,5 @@
 package com.github.br.perelesoq.jam26.render.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -78,6 +77,10 @@ public class AnimatedDrawable extends TextureRegionDrawable {
 
         stateTime = frameIndex * animation.getFrameDuration();
         pause();
+    }
+
+    public float getStateTime() {
+        return stateTime;
     }
 
 }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.github.br.perelesoq.jam26.Resources;
 import com.github.br.perelesoq.jam26.render.ui.AnimatedImage;
+import com.github.tommyettinger.textra.TypingLabel;
 
 public class ActorFactory {
 
@@ -51,7 +52,7 @@ public class ActorFactory {
     }
 
     private Actor createDialogText(MapProperties properties) {
-        Label label = new Label("", skin);
+        TypingLabel label = new TypingLabel("", skin);
         label.setWrap(true);
         return label;
     }

@@ -34,6 +34,10 @@ public class AnimatedImage extends Image {
         return animatedDrawable.getAnimation();
     }
 
+    public float getStateTime() {
+        return animatedDrawable.getStateTime();
+    }
+
     public void pause() {
         animatedDrawable.pause();
     }
