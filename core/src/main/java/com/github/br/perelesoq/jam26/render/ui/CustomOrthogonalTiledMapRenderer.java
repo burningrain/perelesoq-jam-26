@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.render;
+package com.github.br.perelesoq.jam26.render.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.br.perelesoq.jam26.render.ui.ObjectLayerObjectRenderInterceptor;
+import com.github.br.perelesoq.jam26.render.ActorFactory;
 
 public class CustomOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer {
 

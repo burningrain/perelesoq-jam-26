@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.system.audio;
+package com.github.br.perelesoq.jam26.ecs.system.base.audio;
 
 import com.artemis.Aspect;
 import com.artemis.BaseSystem;

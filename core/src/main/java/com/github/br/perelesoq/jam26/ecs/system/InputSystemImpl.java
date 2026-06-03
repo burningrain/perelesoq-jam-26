@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.system.input;
+package com.github.br.perelesoq.jam26.ecs.system;
 
 import com.badlogic.gdx.Input;
 import com.artemis.ComponentMapper;
@@ -7,6 +7,10 @@ import com.github.br.perelesoq.jam26.ecs.component.JumpControlComponent;
 import com.github.br.perelesoq.jam26.ecs.component.VelocityComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.trigger.InteractionIntentComponent;
+import com.github.br.perelesoq.jam26.ecs.system.base.input.AbstractInputSystem;
+import com.github.br.perelesoq.jam26.ecs.system.base.input.GameAction;
+import com.github.br.perelesoq.jam26.ecs.system.base.input.GameInputRegistry;
+import com.github.br.perelesoq.jam26.ecs.system.base.input.MyControllerMapping;
 import de.golfgl.gdx.controllers.mapping.MappedController;
 
 public class InputSystemImpl extends AbstractInputSystem {

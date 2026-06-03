@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.system.trigger;
+package com.github.br.perelesoq.jam26.ecs.system.base.trigger;
 
 import com.artemis.BaseSystem;
 import com.artemis.EntityEdit;
@@ -7,23 +7,29 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.github.br.perelesoq.jam26.Resources;
+import com.github.br.perelesoq.jam26.dialogs.DialogFactory;
 import com.github.br.perelesoq.jam26.ecs.component.CharacterStateComponent;
-import com.github.br.perelesoq.jam26.ecs.component.physics.Hitbox;
-import com.github.br.perelesoq.jam26.ecs.component.physics.PhysicsComponent;
 import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
 import com.github.br.perelesoq.jam26.ecs.component.VelocityComponent;
+import com.github.br.perelesoq.jam26.ecs.component.physics.Hitbox;
+import com.github.br.perelesoq.jam26.ecs.component.physics.PhysicsComponent;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.trigger.TriggerComponent;
-import com.github.br.perelesoq.jam26.render.CustomOrthogonalTiledMapRenderer;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 import com.github.br.perelesoq.jam26.render.ui.AnimatedImage;
+import com.github.br.perelesoq.jam26.render.ui.CustomOrthogonalTiledMapRenderer;
 
 public class TriggerFactory extends BaseSystem {
 
     private final CustomOrthogonalTiledMapRenderer renderer;
+    private final DialogFactory dialogFactory;
 
-    public TriggerFactory(CustomOrthogonalTiledMapRenderer renderer) {
+    public TriggerFactory(CustomOrthogonalTiledMapRenderer renderer, DialogFactory dialogFactory) {
         this.renderer = renderer;
+        this.dialogFactory = dialogFactory;
     }
 
     @Override
@@ -58,16 +64,16 @@ public class TriggerFactory extends BaseSystem {
             createPhysicsForTrigger(edit, x, y, width, height);
             switch (name) {
                 case "terminal_trigger":
-                    createTerminalTrigger(edit);
+                    createTerminalTrigger(edit, properties);
                     break;
                 case "controller_trigger":
-                    createControllerTrigger(edit);
+                    createControllerTrigger(edit, properties);
                     break;
             }
         }
     }
 
-    public void createControllerTrigger(EntityEdit edit) {
+    public void createControllerTrigger(EntityEdit edit, MapProperties properties) {
         TriggerComponent trigger = edit.create(TriggerComponent.class);
         trigger.requiresExecution = true;
         trigger.action = new TriggerAction() {
@@ -94,7 +100,7 @@ public class TriggerFactory extends BaseSystem {
         };
     }
 
-    public void createTerminalTrigger(EntityEdit edit) {
+    public void createTerminalTrigger(EntityEdit edit, MapProperties properties) {
         TriggerComponent trigger = edit.create(TriggerComponent.class);
         trigger.requiresExecution = true;
         trigger.action = new TriggerAction() {
@@ -116,7 +122,11 @@ public class TriggerFactory extends BaseSystem {
 
             @Override
             public void onExecute(int playerEntityId, int triggerEntityId) {
-
+                String dialog = properties.get("dialog", String.class);
+                if (dialog == null) {
+                    throw new GdxRuntimeException("terminal property 'dialog' is not found");
+                }
+                DialogueSingletonComponent.INSTANCE.start(dialogFactory.getDialog(dialog));
             }
         };
     }

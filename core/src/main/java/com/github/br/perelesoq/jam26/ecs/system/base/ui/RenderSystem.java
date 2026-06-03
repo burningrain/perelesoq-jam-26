@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.system.ui;
+package com.github.br.perelesoq.jam26.ecs.system.base.ui;
 
 import com.artemis.Aspect;
 import com.artemis.BaseSystem;
@@ -19,7 +19,7 @@ import com.github.br.perelesoq.jam26.ecs.component.render.RenderComponent;
 import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
 import com.github.br.perelesoq.jam26.render.ActorFactory;
-import com.github.br.perelesoq.jam26.render.CustomOrthogonalTiledMapRenderer;
+import com.github.br.perelesoq.jam26.render.ui.CustomOrthogonalTiledMapRenderer;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 import com.github.br.perelesoq.jam26.render.ui.ObjectLayerObjectRenderInterceptor;
 
@@ -153,11 +153,22 @@ public class RenderSystem extends BaseSystem {
 
             layer.setVisible(changeRenderLayerComponent.isVisible);
             layer.setOpacity(changeRenderLayerComponent.opacity);
+            if (layer instanceof com.badlogic.gdx.maps.MapGroupLayer) {
+                renderer.updateOffsetsForGroupLayer(
+                    layerName,
+                    changeRenderLayerComponent.offsetX,
+                    changeRenderLayerComponent.offsetY
+                );
+            } else {
+                layer.setOffsetX(changeRenderLayerComponent.offsetX);
+                layer.setOffsetY(changeRenderLayerComponent.offsetY);
+            }
+
             layer.setTintColor(changeRenderLayerComponent.tintColor);
-            layer.setOffsetX(changeRenderLayerComponent.offsetX);
-            layer.setOffsetY(changeRenderLayerComponent.offsetY);
             layer.setParallaxX(changeRenderLayerComponent.parallaxFactor.x);
             layer.setParallaxY(changeRenderLayerComponent.parallaxFactor.y);
+
+            changeRenderLayerComponent.isDirty = false;
         }
     }
 

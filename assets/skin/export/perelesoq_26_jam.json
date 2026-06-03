@@ -5,6 +5,12 @@
 		"scaledSize": -1,
 		"markupEnabled": false,
 		"flip": false
+	},
+	"PressStart2P-Regular_8": {
+		"file": "PressStart2P-Regular_8.fnt",
+		"scaledSize": -1,
+		"markupEnabled": false,
+		"flip": false
 	}
 },
 "com.badlogic.gdx.graphics.Color": {
@@ -27,6 +33,17 @@
 		"imageDown": "arrow",
 		"imageOver": "arrow",
 		"font": "PressStart2P-Regular_12"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+	"default": {
+		"font": "PressStart2P-Regular_8",
+		"fontColor": "white"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {
+	"default": {
+		"label": "default"
 	}
 }
 }

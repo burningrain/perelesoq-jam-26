@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.br.perelesoq.jam26.Constants;
 import com.github.br.perelesoq.jam26.Resources;
-import com.github.br.perelesoq.jam26.ecs.system.input.MyControllerMapping;
+import com.github.br.perelesoq.jam26.ecs.system.base.input.MyControllerMapping;
 import com.github.br.perelesoq.jam26.structure.AudioSettings;
 import com.github.br.perelesoq.jam26.structure.audio.AudioAssetManager;
 import com.github.br.perelesoq.jam26.structure.screen.AbstractGameScreen;

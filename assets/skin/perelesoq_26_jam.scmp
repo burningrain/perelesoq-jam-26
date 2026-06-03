@@ -64,6 +64,26 @@ atlasData: {
 			type: FONT
 			hidden: false
 		}
+		{
+			file: D:/projects/perelesoq-jam-26/assets/fonts/Press_Start_2P/PressStart2P-Regular_8.png
+			bgColor: {
+				r: 1
+				g: 1
+				b: 1
+				a: 1
+			}
+			tint: null
+			tintName: null
+			name: PressStart2P-Regular_8
+			tiled: false
+			minWidth: -1
+			minHeight: -1
+			customized: false
+			tenPatchData: null
+			tvgData: null
+			type: FONT
+			hidden: false
+		}
 	]
 }
 jsonData: {
@@ -97,6 +117,14 @@ jsonData: {
 			markupEnabled: false
 			scaling: -1
 			file: D:/projects/perelesoq-jam-26/assets/fonts/Press_Start_2P/PressStart2P-Regular_12.fnt
+		}
+		{
+			class: com.ray3k.skincomposer.data.FontData
+			name: PressStart2P-Regular_8
+			flip: false
+			markupEnabled: false
+			scaling: -1
+			file: D:/projects/perelesoq-jam-26/assets/fonts/Press_Start_2P/PressStart2P-Regular_8.fnt
 		}
 	]
 	freeTypeFonts: []
@@ -468,13 +496,13 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: null
+						value: PressStart2P-Regular_8
 					}
 					fontColor: {
 						type: com.badlogic.gdx.graphics.Color
 						name: fontColor
 						optional: true
-						value: null
+						value: white
 					}
 					background: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable

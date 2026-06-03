@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.system.trigger;
+package com.github.br.perelesoq.jam26.ecs.system.base.trigger;
 
 
 public interface TriggerAction {

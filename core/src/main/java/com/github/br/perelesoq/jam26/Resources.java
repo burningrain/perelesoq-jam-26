@@ -25,6 +25,11 @@ public interface Resources {
 
     interface Atlases {
         String GAME_OBJECTS = "pictures/atlas/game-objects.atlas";
+
+        interface Objects {
+            String AVATAR_HERO = "dialog_hero";
+            String AVATAR_COMPUTER = "dialog_computer";
+        }
     }
 
     interface Animations {

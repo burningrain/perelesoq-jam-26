@@ -1,7 +1,6 @@
-package com.github.br.perelesoq.jam26.ecs.system.input;
+package com.github.br.perelesoq.jam26.ecs.system.base.input;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntMap;
 import de.golfgl.gdx.controllers.mapping.MappedController;

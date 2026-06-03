@@ -11,16 +11,23 @@ PressStart2P-Regular_12
   orig: 506, 80
   offset: 0, 0
   index: -1
+PressStart2P-Regular_8
+  rotate: false
+  xy: 1, 379
+  size: 506, 44
+  orig: 506, 44
+  offset: 0, 0
+  index: -1
 arrow
   rotate: false
-  xy: 1, 411
+  xy: 1, 365
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
   index: -1
 arrow_empty
   rotate: false
-  xy: 1, 397
+  xy: 1, 351
   size: 12, 12
   orig: 12, 12
   offset: 0, 0

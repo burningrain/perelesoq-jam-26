@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.system.input;
+package com.github.br.perelesoq.jam26.ecs.system.base.input;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerMapping;

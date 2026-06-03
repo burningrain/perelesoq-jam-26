@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.system.ui;
+package com.github.br.perelesoq.jam26.ecs.system.base.ui;
 
 import com.artemis.ComponentMapper;
 import com.artemis.annotations.All;

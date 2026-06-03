@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.system.input;
+package com.github.br.perelesoq.jam26.ecs.system.base.input;
 
 import com.artemis.BaseSystem;
 import com.badlogic.gdx.controllers.Controller;
@@ -19,10 +19,6 @@ public abstract class AbstractInputSystem extends BaseSystem {
 
         // Пытаемся инициализировать контроллер, если он уже подключен
         checkAndRefreshController();
-    }
-
-    @Override
-    protected void initialize() {
     }
 
     /**
@@ -53,5 +49,19 @@ public abstract class AbstractInputSystem extends BaseSystem {
     }
 
     protected abstract void processGameAction(GameInputRegistry inputRegistry, MappedController mappedController);
+
+    public boolean isActionJustPressed(GameAction gameAction) {
+        return inputRegistry.isActionJustPressed(gameAction, mappedController);
+    }
+
+    public boolean isAnyActionJustPressed() {
+        for (GameAction gameAction : GameAction.values()) {
+            if (isActionJustPressed(gameAction)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 }

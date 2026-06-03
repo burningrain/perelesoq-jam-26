@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.system.trigger;
+package com.github.br.perelesoq.jam26.ecs.system.base.trigger;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
@@ -53,6 +53,11 @@ public class TriggerSystem extends IteratingSystem {
                 // Удаляем намерение сразу после успешного срабатывания,
                 // чтобы одно нажатие случайно не активировало два триггера подряд
                 world.edit(playerEntityId).remove(InteractionIntentComponent.class);
+
+                if (trigger.isOnlyOnce) {
+                    trigger.action.onExit(playerEntityId, triggerEntityId);
+                    world.delete(triggerEntityId);
+                }
             }
         }
     }

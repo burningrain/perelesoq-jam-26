@@ -7,6 +7,10 @@ public interface TiledUiConstants {
         String TRIGGERS_LAYER = "triggers";
         String ACTORS_LAYER = "actors";
         String BACK_BLUE = "back_blue";
+
+        String DIALOG_GROUP = "dialog_group";
+        String DIALOG_ACTORS = "dialog_actors";
+        String DIALOG_BACK = "dialog_back";
     }
 
     interface Actors {
@@ -15,6 +19,12 @@ public interface TiledUiConstants {
         String CONTROLLER = "controller";
         String TERMINAL = "terminal";
         String DOOR = "door";
+
+        interface DIALOG {
+            String AVATAR = "avatar";
+            String TEXT = "text";
+            String WINDOW = "dialog_window";
+        }
     }
 
 }
