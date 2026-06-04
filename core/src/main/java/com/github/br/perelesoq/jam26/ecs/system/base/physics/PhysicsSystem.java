@@ -35,7 +35,7 @@ public class PhysicsSystem extends IteratingSystem {
             if (mTrigger.has(entityIdA) || mTrigger.has(entityIdB)) {
                 return Response.cross;
             }
-            return Response.slide;
+             return Response.slide;
         }
     };
 

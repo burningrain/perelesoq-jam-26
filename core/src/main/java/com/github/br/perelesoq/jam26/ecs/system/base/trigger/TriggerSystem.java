@@ -21,7 +21,7 @@ public class TriggerSystem extends IteratingSystem {
     @Override
     protected void process(int triggerEntityId) {
         int playerEntityId = HeroSingletonComponent.INSTANCE.playerId;
-        if (playerEntityId == 0) return;
+        if (playerEntityId == -1) return;
 
         TriggerComponent trigger = mTrigger.get(triggerEntityId);
 

@@ -81,9 +81,12 @@ public class TriggerFactory extends BaseSystem {
                     break;
                 case "level_exit_trigger":
                     createLevelExitTrigger(edit, properties);
-                case "back_box":
+                    break;
+                case "back_box_trigger":
                     createBackBoxTrigger(edit, properties);
                     break;
+                default:
+                    throw new GdxRuntimeException("trigger [" + name + "] is not found");
             }
         }
     }
@@ -124,7 +127,7 @@ public class TriggerFactory extends BaseSystem {
             @Override
             public void onExecute(int playerEntityId, int triggerEntityId) {
                if (endCinematic == null) {
-                    createShangeLevelIntentComponent(nextLevelKey, trigger);
+                    createChangeLevelIntentComponent(nextLevelKey, trigger);
                     return;
                 }
 
@@ -137,19 +140,19 @@ public class TriggerFactory extends BaseSystem {
                         }
                         @Override
                         public boolean onUpdate(World world, float delta) {
-                            createShangeLevelIntentComponent(nextLevelKey, trigger);
+                            createChangeLevelIntentComponent(nextLevelKey, trigger);
                             return true;
                         }
                     });
                     cinematicFactory.start(cinematicScript);
                 } else {
-                    createShangeLevelIntentComponent(nextLevelKey, trigger);
+                    createChangeLevelIntentComponent(nextLevelKey, trigger);
                 }
             }
         };
     }
 
-    private void createShangeLevelIntentComponent(String nextLevelKey, TriggerComponent trigger) {
+    private void createChangeLevelIntentComponent(String nextLevelKey, TriggerComponent trigger) {
         // Создаем сущность-интент для смены уровня
         int intentEntity = world.create();
         ChangeLevelIntentComponent intent = world.edit(intentEntity).create(ChangeLevelIntentComponent.class);

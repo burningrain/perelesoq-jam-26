@@ -98,12 +98,24 @@ public class EntityFactory extends BaseSystem {
     }
 
     private void createBoss(MapProperties properties, float x, float y, float width, float height) {
-        EntityEdit bossEntity = createStaticObstacle(x, y, width, height);
+        int entityId = world.create();
+        EntityEdit edit = world.edit(entityId);
 
-        AnimationComponent animationComponent = bossEntity.create(AnimationComponent.class);
+        TransformComponent transformComponent = edit.create(TransformComponent.class);
+        transformComponent.x = x;
+        transformComponent.y = y;
+
+        PhysicsComponent physicsComponent = edit.create(PhysicsComponent.class);
+        physicsComponent.hitbox = new Hitbox(width, height, 43f, 43f, 36f, 0f);
+        physicsComponent.useGravity = false;
+
+        edit.create(VelocityComponent.class);
+        edit.create(CharacterStateComponent.class);
+
+        AnimationComponent animationComponent = edit.create(AnimationComponent.class);
         animationComponent.simpleAnimationComponent = AnimationFactory.createBoss();
 
-        RenderComponent renderComponent = bossEntity.create(RenderComponent.class);
+        RenderComponent renderComponent = edit.create(RenderComponent.class);
         renderComponent.textureRegion = animationComponent.simpleAnimationComponent.animatorDynamicPart.currentFrame;
         renderComponent.layer = TiledUiConstants.Layers.GAME_OBJECTS_LAYER;
     }
