@@ -4,10 +4,14 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 import com.artemis.utils.IntBag;
+import com.badlogic.gdx.utils.Array;
 import com.github.ashvard.gdx.simple.animation.component.SimpleAnimatorUtils;
 import com.github.ashvard.gdx.simple.animation.fsm.FsmContext;
+import com.github.br.perelesoq.jam26.Resources;
+import com.github.br.perelesoq.jam26.dialogs.DialogFactory;
 import com.github.br.perelesoq.jam26.ecs.component.*;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.BossSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.ui.AnimationComponent;
 import com.github.br.perelesoq.jam26.ecs.system.base.ui.RenderSystem;
@@ -129,8 +133,16 @@ public class BossAiSystem extends IteratingSystem {
     }
 
     private void triggerGameOver() {
-        // Здесь ваш вызов экрана смерти:
-        // gameManager.screenStateManager.changeCurrentState(Screens.DEATH);
-        System.out.println("GAME OVER! Удар босса настиг героя вне укрытия коробки!");
+        Array<DialogueSingletonComponent.Phrase> phrases = DialogFactory.bossWin();
+        phrases.add(new DialogueSingletonComponent.Phrase(
+            Resources.Atlases.Objects.AVATAR_HERO,
+            "ЭТУ ФРАЗУ ВИДНО НЕ БУДЕТ. FIXME!",
+            () -> {
+                int intentEntity = world.create();
+                ChangeLevelIntentComponent intent = world.edit(intentEntity).create(ChangeLevelIntentComponent.class);
+                intent.nextLevelKey = "LEVEL_1";
+            }
+        ));
+        DialogueSingletonComponent.INSTANCE.start(phrases);
     }
 }

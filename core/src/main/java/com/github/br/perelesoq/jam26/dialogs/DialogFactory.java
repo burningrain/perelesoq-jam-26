@@ -12,6 +12,31 @@ public class DialogFactory {
     public static final String TERMINAL_1 = "terminal_1";
     public static final String CONTROLLER_1_IS_NOT_ACTIVATED = "controller_1_is_not_activated";
 
+    public static Array<DialogueSingletonComponent.Phrase> bossWin() {
+        return new Array<DialogueSingletonComponent.Phrase>() {{
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "Ты проиграл!"
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_HERO,
+                "Почему?"
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "Я заморгал тебя до смерти!"
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "Надо прятаться, понимаешь?"
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "Начинаем сначала"
+            ));
+        }};
+    }
+
     public Array<DialogueSingletonComponent.Phrase> controller_1_is_not_activated() {
         return new Array<DialogueSingletonComponent.Phrase>() {{
             add(new DialogueSingletonComponent.Phrase(
@@ -92,10 +117,7 @@ public class DialogFactory {
         return new Array<DialogueSingletonComponent.Phrase>() {{
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
-                "С окончанием игры для геймджема 'перелесок' 2026 года!",
-                () -> {
-                    Controller1SingletonComponent.INSTANCE.isActivated = true;
-                }
+                "С окончанием геймджема 'Перелесок' 2026 года!"
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_HERO,
@@ -103,10 +125,7 @@ public class DialogFactory {
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
-                "Чем теперь займешься?!",
-                () -> {
-                    Controller1SingletonComponent.INSTANCE.isActivated = true;
-                }
+                "Чем теперь займешься?!"
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_HERO,

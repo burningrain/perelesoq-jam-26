@@ -40,6 +40,8 @@ public class LevelTransitionSystem extends IteratingSystem {
         switch (key) {
             case "MAIN":
                 return Screens.MAIN;
+            case "LEVEL_1":
+                return Screens.LEVEL_1;
             case "LEVEL_BOSS":
                 return Screens.LEVEL_BOSS;
             default:
