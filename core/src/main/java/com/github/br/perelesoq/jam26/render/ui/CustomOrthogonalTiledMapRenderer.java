@@ -21,7 +21,7 @@ public class CustomOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
     private final ActorFactory actorFactory;
     private final InputMultiplexer inputMultiplexer;
 
-    private final ObjectLayerObjectRenderInterceptor postRenderSupplier;
+    private ObjectLayerObjectRenderInterceptor postRenderSupplier;
 
     public CustomOrthogonalTiledMapRenderer(
         ActorFactory actorFactory, Viewport viewport, TiledMap map, float unitScale,
@@ -36,6 +36,18 @@ public class CustomOrthogonalTiledMapRenderer extends OrthogonalTiledMapRenderer
 
         inputMultiplexer = new InputMultiplexer();
         createStageActors(inputMultiplexer, map.getLayers());
+    }
+
+    public Viewport getViewport() {
+        return viewport;
+    }
+
+    public ActorFactory getActorFactory() {
+        return actorFactory;
+    }
+
+    public void setPostRenderSupplier(ObjectLayerObjectRenderInterceptor postRenderSupplier) {
+        this.postRenderSupplier = postRenderSupplier;
     }
 
     @Override

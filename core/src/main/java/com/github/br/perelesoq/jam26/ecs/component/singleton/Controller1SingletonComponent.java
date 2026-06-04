@@ -4,6 +4,6 @@ public class Controller1SingletonComponent {
 
     public static final Controller1SingletonComponent INSTANCE = new Controller1SingletonComponent();
 
-    public boolean isActive = false;
+    public boolean isActivated = false;
 
 }

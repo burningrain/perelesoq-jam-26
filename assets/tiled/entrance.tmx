@@ -22,7 +22,7 @@
   <object id="8" name="elevator" gid="8" x="8.5" y="60" width="44" height="53"/>
   <object id="9" name="camera" gid="6" x="294.5" y="110.25" width="22" height="36"/>
  </objectgroup>
- <objectgroup color="#ff007f" id="6" name="game_objects">
+ <objectgroup color="#ff007f" id="6" name="game_objects" locked="1">
   <object id="10" name="wall" x="0.25" y="164.261" width="319.75" height="15.4545"/>
   <object id="11" name="wall" x="0.375" y="0.42045" width="319.75" height="6.4091"/>
   <object id="12" name="wall" x="315.875" y="7.79545" width="4.25" height="111.659"/>
@@ -35,7 +35,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup color="#ffff7f" id="7" name="triggers">
+ <objectgroup color="#ffff7f" id="7" name="triggers" locked="1">
   <object id="15" name="terminal_trigger" x="90.75" y="134.5" width="37.25" height="29">
    <properties>
     <property name="dialog" value="terminal_1"/>
@@ -54,7 +54,7 @@
    </properties>
   </object>
  </objectgroup>
- <group id="9" name="dialog_group">
+ <group id="9" name="dialog_group" locked="1">
   <objectgroup color="#00aa00" id="8" name="dialog_back" locked="1">
    <object id="18" name="dialog_window" gid="11" x="58" y="68" width="204" height="56"/>
   </objectgroup>

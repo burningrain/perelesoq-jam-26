@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="4" tileheight="4" infinite="0" nextlayerid="8" nextobjectid="7">
+ <tileset firstgid="1" source="window-dialog.tsx"/>
+ <tileset firstgid="4" source="game-object.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="80" height="45">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20PBxQAAAAAAAAAAAAAAAAA8GY4QAAB
+  </data>
+ </layer>
+ <objectgroup id="3" name="actors">
+  <object id="6" name="camera" gid="9" x="286.498" y="101.29" width="22" height="36"/>
+ </objectgroup>
+ <objectgroup color="#ff007f" id="2" name="game_objects" opacity="0.9">
+  <object id="1" name="player" x="9.53926" y="18.7426" width="32" height="32"/>
+  <object id="2" name="wall" x="0.493133" y="134.004" width="319.75" height="15.4545"/>
+ </objectgroup>
+ <objectgroup id="4" name="triggers"/>
+ <group id="5" name="dialog_group">
+  <objectgroup color="#00aa00" id="7" name="dialog_back">
+   <object id="3" name="dialog_window" gid="1" x="58" y="68" width="204" height="56"/>
+  </objectgroup>
+  <objectgroup id="6" name="dialog_actors">
+   <object id="4" name="avatar" x="68.2" y="18" width="40" height="44"/>
+   <object id="5" name="text" x="115.38" y="18" width="141" height="44"/>
+  </objectgroup>
+ </group>
+</map>

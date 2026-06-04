@@ -16,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.github.ashvard.gdx.simple.animation.SimpleAnimation;
 import com.github.ashvard.gdx.simple.animation.SimpleAnimationSyncLoader;
+import com.github.br.perelesoq.jam26.screen.PreScreenAssetLoader;
 import com.github.br.perelesoq.jam26.screen.Screens;
 import com.github.br.perelesoq.jam26.structure.AbstractSimpleGame;
 import com.github.br.perelesoq.jam26.structure.GameSettings;
@@ -23,6 +24,8 @@ import com.github.br.perelesoq.jam26.structure.screen.statemachine.GameScreenSta
 import com.github.tommyettinger.textra.FWSkinLoader;
 
 public class Main extends AbstractSimpleGame<UserFactoryImpl> {
+
+    private PreScreenAssetLoader preScreenAssetLoader = new PreScreenAssetLoader();
 
     @Override
     protected UserFactoryImpl createUserFactory() {
@@ -66,6 +69,8 @@ public class Main extends AbstractSimpleGame<UserFactoryImpl> {
     }
 
     private void loadCommonResources(AssetManager assetManager) {
+        preScreenAssetLoader.loadAssets(assetManager);
+
         // skin
         assetManager.load(Resources.SKIN_ATLAS, TextureAtlas.class);
         assetManager.load(Resources.SKIN, Skin.class, new SkinLoader.SkinParameter(Resources.SKIN_ATLAS));
@@ -76,6 +81,8 @@ public class Main extends AbstractSimpleGame<UserFactoryImpl> {
 
         BitmapFont font8 = skin.getFont("PressStart2P-Regular_8");
         font8.getRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
+        assetManager.finishLoading();
     }
 
     @Override

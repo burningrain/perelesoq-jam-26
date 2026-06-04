@@ -161,14 +161,14 @@ public class TriggerFactory extends BaseSystem {
 
             @Override
             public void onExecute(int playerEntityId, int triggerEntityId) {
-                boolean isActive = Controller1SingletonComponent.INSTANCE.isActive;
+                boolean isActive = Controller1SingletonComponent.INSTANCE.isActivated;
                 if (isActive) {
                     int entityId = world.create();
                     EntityEdit edit = world.edit(entityId);
                     OpenDoorIntentComponent openDoorIntentComponent = edit.create(OpenDoorIntentComponent.class);
                     openDoorIntentComponent.doorId = doorId;
                     trigger.isNotReused = true;
-                    Controller1SingletonComponent.INSTANCE.isActive = false; // сбрасываем флаг
+                    Controller1SingletonComponent.INSTANCE.isActivated = false; // сбрасываем флаг
                 } else {
                     if (dialogId != null) {
                         DialogueSingletonComponent.INSTANCE.start(dialogFactory.getDialog(dialogId));

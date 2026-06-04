@@ -2,7 +2,6 @@ package com.github.br.perelesoq.jam26.dialogs;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.github.br.perelesoq.jam26.Resources;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.Controller1SingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
@@ -83,7 +82,7 @@ public class DialogFactory {
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
                 "Я начну вести обратный отсчет! А-ХА-ХА-ХА-ХА...",
                 () -> {
-                    Controller1SingletonComponent.INSTANCE.isActive = true;
+                    Controller1SingletonComponent.INSTANCE.isActivated = true;
                 }
             ));
         }};

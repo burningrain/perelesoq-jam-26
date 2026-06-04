@@ -21,6 +21,7 @@ public interface Resources {
     interface Tiled {
 
         String LEVEL_1_ENTRANCE = "tiled-packed/entrance.tmx";
+        String LEVEL_BOSS = "tiled-packed/boss.tmx";
 
     }
 

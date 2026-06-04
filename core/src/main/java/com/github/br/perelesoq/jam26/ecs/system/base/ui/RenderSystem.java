@@ -14,18 +14,18 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.br.perelesoq.jam26.ecs.component.ui.render.ChangeRenderLayerComponent;
-import com.github.br.perelesoq.jam26.ecs.component.ui.render.RenderComponent;
 import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.component.ui.render.ChangeRenderLayerComponent;
+import com.github.br.perelesoq.jam26.ecs.component.ui.render.RenderComponent;
 import com.github.br.perelesoq.jam26.render.ActorFactory;
-import com.github.br.perelesoq.jam26.render.ui.CustomOrthogonalTiledMapRenderer;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
+import com.github.br.perelesoq.jam26.render.ui.CustomOrthogonalTiledMapRenderer;
 import com.github.br.perelesoq.jam26.render.ui.ObjectLayerObjectRenderInterceptor;
 
 public class RenderSystem extends BaseSystem {
 
-    private final CustomOrthogonalTiledMapRenderer renderer;
+    private CustomOrthogonalTiledMapRenderer renderer;
 
     // Подписка на сущности с RenderComponent
     private EntitySubscription renderSubscription;
@@ -37,11 +37,20 @@ public class RenderSystem extends BaseSystem {
     protected ComponentMapper<RenderComponent> renderMapper;
     protected ComponentMapper<ChangeRenderLayerComponent> changeRenderLayerMapper;
 
-    private final ObjectLayerObjectRenderInterceptorImpl postRenderSupplier = new ObjectLayerObjectRenderInterceptorImpl();
+    public final ObjectLayerObjectRenderInterceptorImpl postRenderSupplier = new ObjectLayerObjectRenderInterceptorImpl();
 
-    private class ObjectLayerObjectRenderInterceptorImpl implements ObjectLayerObjectRenderInterceptor {
+    public void setNewTileMap(TiledMap tiledMap) {
+        setRenderer(this.renderer.getActorFactory(), this.renderer.getViewport(), tiledMap, this.renderer.getUnitScale());
+    }
+
+    public class ObjectLayerObjectRenderInterceptorImpl implements ObjectLayerObjectRenderInterceptor {
 
         private final ObjectMap<String, IntBag> layerEntitiesMap = new ObjectMap<>();
+
+        @Override
+        public void clearBuffer() {
+            layerEntitiesMap.clear();
+        }
 
         @Override
         public boolean isIgnoreLayer(String name) {
@@ -114,7 +123,18 @@ public class RenderSystem extends BaseSystem {
     }
 
     public RenderSystem(ActorFactory actorFactory, Viewport viewport, TiledMap map, float unitScale) {
+        setRenderer(actorFactory, viewport, map, unitScale);
+    }
+
+    private void setRenderer(ActorFactory actorFactory, Viewport viewport, TiledMap map, float unitScale) {
+        postRenderSupplier.clearBuffer();
+        if (this.renderer != null) {
+            // сбрасываем старый, чтобы не мешался
+            this.renderer.setPostRenderSupplier(ObjectLayerObjectRenderInterceptor.DEFAULT);
+        }
+
         this.renderer = new CustomOrthogonalTiledMapRenderer(actorFactory, viewport, map, unitScale, postRenderSupplier);
+
     }
 
     public CustomOrthogonalTiledMapRenderer getRenderer() {
