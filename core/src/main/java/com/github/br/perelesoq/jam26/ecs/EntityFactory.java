@@ -127,6 +127,11 @@ public class EntityFactory extends BaseSystem {
         RenderComponent renderComponent = edit.create(RenderComponent.class);
         renderComponent.textureRegion = animationComponent.simpleAnimationComponent.animatorDynamicPart.currentFrame;
         renderComponent.layer = TiledUiConstants.Layers.GAME_OBJECTS_LAYER;
+
+        HealthComponent health = edit.create(HealthComponent.class);
+        float bossHp = 4f;
+        health.maxHp = bossHp;
+        health.hp = bossHp;
     }
 
     public int createBullet(float x, float y, float dirX) {

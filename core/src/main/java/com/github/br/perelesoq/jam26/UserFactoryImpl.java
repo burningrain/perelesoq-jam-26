@@ -87,6 +87,7 @@ public class UserFactoryImpl implements UserFactory {
             // --- 2. ФАЗА ИГРОВОЙ ЛОГИКИ И СОСТОЯНИЙ ---
             .with(new CinematicSystem())
             .with(new SirenSystem())                  // Считает альфу и звук до симуляции физики и рендера
+            .with(new BossDeathSystem())
             .with(new BulletSpawnerSystem())          // ОБРАБАТЫВАЕТ СИГНАЛ ВЫСТРЕЛА СРАЗУ ПОСЛЕ ИНПУТА
             .with(new BulletSystem())
 

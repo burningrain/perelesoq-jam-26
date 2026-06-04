@@ -24,18 +24,40 @@ public class PhysicsSystem extends IteratingSystem {
     private ComponentMapper<CharacterStateComponent> mState;
     protected ComponentMapper<TriggerComponent> mTrigger;
 
+    private ComponentMapper<BulletComponent> mBullet;
+    private ComponentMapper<HealthComponent> mHealth;
+
     // маппер для компонента удаления
     private ComponentMapper<RemoveFromPhysicsWorldComponent> mRemovePhysics;
 
     private final CollisionFilter triggerCollisionFilter = new CollisionFilter() {
         @Override
         public Response filter(Item item, Item other) {
+            if (item.userData == null || other.userData == null) {
+                return Response.slide;
+            }
+
             int entityIdA = (Integer) item.userData;
             int entityIdB = (Integer) other.userData;
-            if (mTrigger.has(entityIdA) || mTrigger.has(entityIdB)) {
+
+            // Проверяем, является ли кто-то триггером или пулей
+            boolean isTriggerA = mTrigger.has(entityIdA) || mBullet.has(entityIdA);
+            boolean isTriggerB = mTrigger.has(entityIdB) || mBullet.has(entityIdB);
+
+            if (isTriggerA || isTriggerB) {
+                // Если это пуля, настраиваем поведение при встрече с твердыми объектами
+                if (mBullet.has(entityIdA)) {
+                    boolean isWallOrBoss = !mTrigger.has(entityIdB) && entityIdB != com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent.INSTANCE.playerId;
+                    if (isWallOrBoss) return Response.touch;
+                }
+                if (mBullet.has(entityIdB)) {
+                    boolean isWallOrBoss = !mTrigger.has(entityIdA) && entityIdA != com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent.INSTANCE.playerId;
+                    if (isWallOrBoss) return Response.touch;
+                }
+
                 return Response.cross;
             }
-             return Response.slide;
+            return Response.slide;
         }
     };
 
@@ -138,7 +160,7 @@ public class PhysicsSystem extends IteratingSystem {
         float currentX = finalRect != null ? finalRect.x : transform.x + actualOffsetX;
         float currentY = finalRect != null ? finalRect.y : transform.y + actualOffsetY;
 
-// 1. ГРАВИТАЦИЯ
+        // 1. ГРАВИТАЦИЯ
         if (physics.useGravity) {
             if (velocity.y < 0) {
                 float fallMultiplier = 1.9f;
@@ -183,6 +205,33 @@ public class PhysicsSystem extends IteratingSystem {
 
             int entityIdA = (Integer) col.item.userData;
             int entityIdB = (Integer) col.other.userData;
+
+            if (responseType == Response.touch && mBullet.has(entityId)) {
+                int hitEntityId = (entityId == entityIdA) ? entityIdB : entityIdA;
+
+                // 1. Наносим урон, если у цели есть здоровье (Босс)
+                if (mHealth.has(hitEntityId)) {
+                    HealthComponent health = mHealth.get(hitEntityId);
+                    if (!health.isDead) {
+                        BulletComponent bullet = mBullet.get(entityId);
+                        health.hp -= bullet.damage;
+
+                        if (health.hp <= 0) {
+                            health.hp = 0;
+                            health.isDead = true;
+                        }
+                    }
+                }
+
+                // 2. Спавним команду на удаление пули из JBump через ваш компонент
+//                int removeRequestEntity = world.create();
+//                RemoveFromPhysicsWorldComponent removeReq = mRemovePhysics.create(removeRequestEntity);
+//                removeReq.itemToRemove = physics.item;
+
+                // 3. Удаляем пулю из ECS
+                world.delete(entityId);
+                return; // Завершаем обработку кадра для этой пули
+            }
 
             if (mTrigger.has(entityIdA) && entityIdB == entityId) {
                 world.edit(entityIdA).create(OverlappedThisFrameComponent.class);
