@@ -87,6 +87,9 @@ public class UserFactoryImpl implements UserFactory {
             // --- 2. ФАЗА ИГРОВОЙ ЛОГИКИ И СОСТОЯНИЙ ---
             .with(new CinematicSystem())
             .with(new SirenSystem())                  // Считает альфу и звук до симуляции физики и рендера
+            .with(new BulletSpawnerSystem())          // ОБРАБАТЫВАЕТ СИГНАЛ ВЫСТРЕЛА СРАЗУ ПОСЛЕ ИНПУТА
+            .with(new BulletSystem())
+
             .with(new HeroAnimationStateSystem())     // Определяет, бежит персонаж или прыгает, выставляя флаги флипа
             .with(new DoorSystem())                   // Читает намерения, запускает FSM дверей и вовремя удаляет их физику
 
@@ -106,7 +109,7 @@ public class UserFactoryImpl implements UserFactory {
             .with(new LevelTransitionSystem(getGameManager()))
 
             // --- НЕАКТИВНЫЕ ФАБРИКИ (Порядок не важен, они выключены) ---
-            .with(new EntityFactory())
+            .with(new EntityFactory(assetManager))
             .with(new TriggerFactory(renderSystem, dialogFactory, cinematicFactory))
             .build();
 

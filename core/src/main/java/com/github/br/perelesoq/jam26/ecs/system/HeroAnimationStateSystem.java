@@ -26,10 +26,8 @@ public class HeroAnimationStateSystem extends IteratingSystem {
     @Override
     protected void process(int entityId) {
         boolean hasWeapon = HeroSingletonComponent.INSTANCE.hasWeapon;
-
         AnimationComponent animComp = mAnimation.get(entityId);
 
-        // Предохранитель, если анимация еще не успела загрузиться в фабрике
         if (animComp.simpleAnimationComponent == null) return;
 
         VelocityComponent velocity = mVelocity.get(entityId);
@@ -39,6 +37,11 @@ public class HeroAnimationStateSystem extends IteratingSystem {
         // 1. Полностью очищаем все предикаты текущего кадра
         AnimationFactory.resetHeroAnimationContext(fsmContext);
 
+        // Обновляем таймер атаки
+        if (state.attackAnimTimer > 0f) {
+            state.attackAnimTimer -= world.getDelta();
+        }
+
         // Меняем направление ТОЛЬКО если скорость отлична от нуля
         TransformComponent transformComponent = transformMapper.get(entityId);
         if (velocity.x < -0.1f) {
@@ -47,8 +50,15 @@ public class HeroAnimationStateSystem extends IteratingSystem {
             transformComponent.flipX = false;
         }
 
-        // 2. РАСЧЕТ ТЕКУЩЕГО СОСТОЯНИЯ НА ОСНОВЕ ФИЗИКИ
-        if (!state.onGround) {
+        // 2. РАСЧЕТ ТЕКУЩЕГО СОСТОЯНИЯ НА ОСНОВЕ ФИЗИКИ И ТАЙМЕРОВ
+
+        // ПРИОР ИТЕТ АТАК И: Если герой стреляет прямо сейчас, включаем анимацию атаки
+        if (hasWeapon && state.attackAnimTimer > 0f) {
+            // Переключаем FSM на анимацию стрельбы перед собой
+            fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_ATTACK_DOWN, true);
+        }
+        // ИНАЧЕ включаем стандартные перемещения
+        else if (!state.onGround) {
             // --- ПЕРСОНАЖ В ВОЗДУХЕ (ПРЫЖОК / ПАДЕНИЕ) ---
             if (hasWeapon) {
                 fsmContext.insert(HeroAnimationType.TransitionPredicate.IS_WEAPON_JUMP, true);
@@ -73,8 +83,5 @@ public class HeroAnimationStateSystem extends IteratingSystem {
                 }
             }
         }
-
-        // Сюда же позже можно будет добавить проверки на смерть (is_death)
-        // или атаки (is_attack_up / is_attack_down)
     }
 }

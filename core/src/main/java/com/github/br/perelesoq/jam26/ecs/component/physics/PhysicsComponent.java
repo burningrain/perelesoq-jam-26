@@ -9,12 +9,14 @@ public class PhysicsComponent extends PooledComponent {
     public Item<Integer> item;
     public boolean useGravity = false;
     public Hitbox hitbox;
+    public boolean isTrigger;
 
     @Override
     protected void reset() {
         item = null;
         useGravity = false;
         hitbox = null;
+        isTrigger = false;
     }
 
 }

@@ -2,9 +2,7 @@ package com.github.br.perelesoq.jam26.ecs.system;
 
 import com.badlogic.gdx.Input;
 import com.artemis.ComponentMapper;
-import com.github.br.perelesoq.jam26.ecs.component.CharacterStateComponent;
-import com.github.br.perelesoq.jam26.ecs.component.JumpControlComponent;
-import com.github.br.perelesoq.jam26.ecs.component.VelocityComponent;
+import com.github.br.perelesoq.jam26.ecs.component.*;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.trigger.InteractionIntentComponent;
 import com.github.br.perelesoq.jam26.ecs.system.base.input.AbstractInputSystem;
@@ -18,6 +16,7 @@ public class InputSystemImpl extends AbstractInputSystem {
     private ComponentMapper<VelocityComponent> mVelocity;
     private ComponentMapper<JumpControlComponent> mJumpControl;
     private ComponentMapper<CharacterStateComponent> mState;
+    private ComponentMapper<TransformComponent> transMapper;
 
     public InputSystemImpl() {
         super(new GameInputRegistry() {
@@ -43,18 +42,21 @@ public class InputSystemImpl extends AbstractInputSystem {
         int entityId = HeroSingletonComponent.INSTANCE.playerId;
 
         // Предохранитель на случай, если игрок еще не заспавнился
-        if (entityId == -1 || !mVelocity.has(entityId)) return;
+        if (entityId == -1 || !mVelocity.has(entityId) || !transMapper.has(entityId)) return;
 
         VelocityComponent velocity = mVelocity.get(entityId);
         JumpControlComponent jumpCtrl = mJumpControl.get(entityId);
         CharacterStateComponent state = mState.get(entityId);
+        TransformComponent transform = transMapper.get(entityId); // Достаем трансформ сразу в начале
 
-        // --- 1. ПРАВИЛЬНОЕ ГОРИЗОНТАЛЬНОЕ ДВИЖЕНИЕ ---
+        // --- 1. ПРАВИЛЬНОЕ ГОРИЗОНТАЛЬНОЕ ДВИЖЕНИЕ И РАЗВОРOT ---
         float moveX = 0;
         if (inputRegistry.isActionPressed(GameAction.MOVE_LEFT, mappedController)) {
             moveX = -1f;
+            transform.flipX = true; // Разворачиваем спрайт влево при движении влево
         } else if (inputRegistry.isActionPressed(GameAction.MOVE_RIGHT, mappedController)) {
             moveX = 1f;
+            transform.flipX = false; // Разворачиваем спрайт вправо при движении вправо
         } else {
             moveX = 0f;
         }
@@ -74,9 +76,9 @@ public class InputSystemImpl extends AbstractInputSystem {
             if (state.onGround && jumpCtrl.isJumpReady) {
                 jumpCtrl.isJumping = true;
                 jumpCtrl.isJumpReady = false;     // Мгновенно блокируем повторный старт до приземления
-                jumpCtrl.jumpTimeCounter = 0f;  // Сбрасываем таймер Марио-взлета
+                jumpCtrl.jumpTimeCounter = 0f;    // Сбрасываем таймер Марио-взлета
                 velocity.y = jumpCtrl.INITIAL_JUMP_FORCE; // Даем стартовый толчок
-                state.onGround = false;         // Отрываемся от земли
+                state.onGround = false;           // Отрываемся от земли
             }
 
         } else {
@@ -92,6 +94,26 @@ public class InputSystemImpl extends AbstractInputSystem {
         } else {
             // Если кнопка не нажата, обязательно убираем компонент, чтобы намерение не залипло
             world.edit(entityId).remove(InteractionIntentComponent.class);
+        }
+
+        // --- 4. МЕХАНИКА СТРЕЛЬБЫ ---
+        // Проверяем, подобрал ли герой оружие по сюжету
+        if (HeroSingletonComponent.INSTANCE.hasWeapon) {
+            if (inputRegistry.isActionJustPressed(GameAction.FIRE, mappedController)) {
+                // ВЗВОДИМ ТАЙМЕР АНИМАЦИИ АТАКЫ
+                state.attackAnimTimer = state.ATTACK_ANIM_DURATION;
+                // Направление выстрела берем СТРОГО из TransformComponent!
+                float direction = transform.flipX ? -1f : 1f;
+
+                // Создаем сущность-интент (приказ) на спавн пули
+                int spawnBulletEntity = world.create();
+                SpawnBulletIntentComponent intent = world.edit(spawnBulletEntity).create(SpawnBulletIntentComponent.class);
+
+                // Позиция спавна — вычисляем на основе transform.flipX
+                intent.startX = transform.x + (transform.flipX ? -8f : 32f);
+                intent.startY = transform.y + 8f; // На уровне груди пиксельного героя
+                intent.dirX = direction;
+            }
         }
     }
 

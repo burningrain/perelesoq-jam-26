@@ -1,12 +1,15 @@
 package com.github.br.perelesoq.jam26.ecs;
 
 import com.artemis.*;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.github.br.perelesoq.jam26.Resources;
 import com.github.br.perelesoq.jam26.animation.AnimationFactory;
 import com.github.br.perelesoq.jam26.ecs.component.*;
 import com.github.br.perelesoq.jam26.ecs.component.door.DoorComponent;
@@ -19,12 +22,18 @@ import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 
 public class EntityFactory extends BaseSystem {
 
+    private final AssetManager assetManager;
+
     private Archetype playerArchetype;
 
     protected ComponentMapper<TransformComponent> transformMapper;
     protected ComponentMapper<RenderComponent> renderMapper;
     protected ComponentMapper<AnimationComponent> animationMapper;
     protected ComponentMapper<PhysicsComponent> physicsMapper;
+
+    public EntityFactory(AssetManager assetManager) {
+        this.assetManager = assetManager;
+    }
 
     @Override
     protected void initialize() {
@@ -120,6 +129,39 @@ public class EntityFactory extends BaseSystem {
         renderComponent.layer = TiledUiConstants.Layers.GAME_OBJECTS_LAYER;
     }
 
+    public int createBullet(float x, float y, float dirX) {
+        int id = world.create();
+        EntityEdit edit = world.edit(id);
+
+        // 1. Координаты
+        TransformComponent transform = edit.create(TransformComponent.class);
+        transform.x = x;
+        transform.y = y;
+        transform.flipX = (dirX < 0); // Поворачиваем пулю графически
+
+        // 2. Физика пули (Размер хитбокса пули маленький, например 4x4 пикселя)
+        PhysicsComponent physics = edit.create(PhysicsComponent.class);
+        physics.hitbox = new Hitbox(12f, 12f, 2f, 1f, 3f, 3f);
+        physics.useGravity = false; // Пули не падают на землю
+        physics.isTrigger = true;   // Пуля — это сквозной триггер, она не должна толкать босса или стены!
+
+        // 3. Скорость (Задаем вектор движения)
+        VelocityComponent velocity = edit.create(VelocityComponent.class);
+        velocity.x = dirX * 300f; // 300f — скорость полета снаряда
+
+        edit.create(CharacterStateComponent.class);
+        edit.create(BulletComponent.class);
+
+        // 4. Текстура (Возьмите любой маленький пиксельный регион из атласа, например "bullet")
+        RenderComponent render = edit.create(RenderComponent.class);
+        TextureAtlas textureAtlas = assetManager.get(Resources.Atlases.GAME_OBJECTS, TextureAtlas.class);
+        TextureAtlas.AtlasRegion region = textureAtlas.findRegion("if-bullet");
+        render.textureRegion = region;
+        render.layer = TiledUiConstants.Layers.GAME_OBJECTS_LAYER;
+
+        return id;
+    }
+
     public static Integer getDoorId(MapProperties properties) {
         String doorId = properties.get("doorId", String.class);
         if (doorId == null) {
@@ -166,6 +208,10 @@ public class EntityFactory extends BaseSystem {
                     break;
                 case "boss":
                     createBoss(properties, x, y, width, height);
+                    break;
+                case "bullet":
+                    float dir = Float.parseFloat(properties.get("dir", String.class));
+                    createBullet(x, y, dir);
                     break;
             }
         }
