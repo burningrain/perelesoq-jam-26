@@ -44,4 +44,21 @@ public class AnimationFactory {
         fsmContext.insert(DoorAnimationType.TransitionPredicate.IS_OPENING, false);
     }
 
+    public static SimpleAnimationComponent createBoss() {
+        FsmContext fsmContext = new FsmContext();
+        resetBossAnimationContext(fsmContext);
+
+        fsmContext.insert(BossAnimationType.TransitionPredicate.TO_IDLE, true);
+
+        AnimatorDynamicPart animatorDynamicPart = new AnimatorDynamicPart(/*animatorIdle*/);
+        return new SimpleAnimationComponent(Resources.Animations.BOSS, fsmContext, animatorDynamicPart);
+    }
+
+    public static void resetBossAnimationContext(FsmContext fsmContext) {
+        fsmContext.insert(BossAnimationType.TransitionPredicate.TO_ATTACK, false);
+        fsmContext.insert(BossAnimationType.TransitionPredicate.TO_IDLE, false);
+        fsmContext.insert(BossAnimationType.TransitionPredicate.TO_DEAD, false);
+        fsmContext.insert(BossAnimationType.TransitionPredicate.TO_PREPARE, false);
+    }
+
 }

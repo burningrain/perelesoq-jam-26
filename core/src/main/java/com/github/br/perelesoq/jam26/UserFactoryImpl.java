@@ -60,6 +60,9 @@ public class UserFactoryImpl implements UserFactory {
         animationSystem.addAnimation(assetManager.<SimpleAnimation>get(Resources.Animations.HERO_ANIM_FSM));
         animationSystem.addAnimation(assetManager.<SimpleAnimation>get(Resources.Animations.DOOR_ANIM_FSM));
 
+        animationSystem.addAnimation(assetManager.<SimpleAnimation>get(Resources.Animations.IF_TREE_ANIM_FSM));
+        animationSystem.addAnimation(assetManager.<SimpleAnimation>get(Resources.Animations.BOSS_ANIM_FSM));
+
         RenderSystem renderSystem = new RenderSystem(
             actorFactory,
             ViewPortSingletonComponent.INSTANCE.viewPort,
@@ -104,7 +107,7 @@ public class UserFactoryImpl implements UserFactory {
 
             // --- НЕАКТИВНЫЕ ФАБРИКИ (Порядок не важен, они выключены) ---
             .with(new EntityFactory())
-            .with(new TriggerFactory(renderSystem.getRenderer(), dialogFactory, cinematicFactory))
+            .with(new TriggerFactory(renderSystem, dialogFactory, cinematicFactory))
             .build();
 
         return new World(setup);
@@ -122,11 +125,11 @@ public class UserFactoryImpl implements UserFactory {
         if (ecsWorld == null) {
             this.ecsWorld = createGlobalEcsEngine(gameManager.assetManager, tiledMap);
         } else {
-            RenderSystem system = ecsWorld.getSystem(RenderSystem.class);
-            system.setNewTileMap(tiledMap);
+            RenderSystem renderSystem = ecsWorld.getSystem(RenderSystem.class);
+            renderSystem.setNewTileMap(tiledMap);
         }
 
-        // 1. Собираем и уничтожаем абсолютно все сущности в мире
+        // 1. Стираем старые сущности
         IntBag entities = ecsWorld.getAspectSubscriptionManager()
             .get(Aspect.all())
             .getEntities();
@@ -135,24 +138,30 @@ public class UserFactoryImpl implements UserFactory {
             ecsWorld.delete(entities.get(i));
         }
 
-        // 2. Смываем данные глобальных синглтонов игрового процесса
-        HeroSingletonComponent.INSTANCE.playerId = 0;
+        // 2. Жестко сбрасываем синглтоны блокировок геймплея
+        HeroSingletonComponent.INSTANCE.playerId = -1;
         HeroSingletonComponent.INSTANCE.hasWeapon = false;
+
+        // Чистим диалоги и кат-сцены, чтобы shouldPauseGameplay гарантированно стал false!
+        DialogueSingletonComponent.INSTANCE.isActive = false;
         CinematicSingletonComponent.INSTANCE.steps.clear();
         CinematicSingletonComponent.INSTANCE.isActive = false;
+
         SirenSingletonComponent.INSTANCE.isActive = false;
         Controller1SingletonComponent.INSTANCE.isActivated = false;
 
+        // 3. Чистим ядро Artemis без запуска систем
+        ecsWorld.getSystem(com.artemis.EntityManager.class).reset();
 
-        // 3. Прокатываем один цикл process(), чтобы Artemis мгновенно применил удаления
-        ecsWorld.setDelta(0);
-        ecsWorld.process();
-
+        // 4. Наполняем фабриками новый уровень
         EntityFactory entityFactory = ecsWorld.getSystem(EntityFactory.class);
         entityFactory.createGameObjects(tiledMap);
 
-        TriggerFactory system = ecsWorld.getSystem(TriggerFactory.class);
-        system.createGameObjects(tiledMap);
+        TriggerFactory triggerFactory = ecsWorld.getSystem(TriggerFactory.class);
+        triggerFactory.createGameObjects(tiledMap);
+
+        // 5. Синхронизируем мапперы компонентов для нового героя
+        ecsWorld.getAspectSubscriptionManager().process();
     }
 
     public void render(float delta) {

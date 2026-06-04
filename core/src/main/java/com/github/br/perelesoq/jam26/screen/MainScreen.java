@@ -77,18 +77,19 @@ public class MainScreen extends AbstractGameScreen {
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                getGameManager().screenStateManager.changeCurrentState(Screens.LEVEL_1);
+                getGameManager().screenStateManager.changeCurrentState(Screens.LEVEL_BOSS);
+                //TODO после отладки вернуть getGameManager().screenStateManager.changeCurrentState(Screens.LEVEL_1);
             }
         });
 
-        ImageTextButton settingsButton = new ImageTextButton("Настройки", skin);
-        settingsButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("настройки");
-            }
-        });
-
+//        ImageTextButton settingsButton = new ImageTextButton("Настройки", skin);
+//        settingsButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                System.out.println("настройки");
+//            }
+//        });
+//
         ImageTextButton aboutButton = new ImageTextButton("Титры", skin);
         aboutButton.addListener(new ChangeListener() {
             @Override
@@ -101,15 +102,15 @@ public class MainScreen extends AbstractGameScreen {
         table.setFillParent(true);
         table.left().bottom().padBottom(6f);
 
-        table.add(settingsButton).left();
+//        table.add(settingsButton).left();
         table.add(playButton).spaceLeft(8f);
-        table.add(aboutButton).spaceLeft(8f);
+//        table.add(aboutButton).spaceLeft(8f);
 
         ControllerMenuStage stage = new ControllerMenuStage(viewport);
         stage.addActor(table);
 
         aboutButton.validate();
-        stage.addFocusableActor(settingsButton);
+        //stage.addFocusableActor(settingsButton);
         stage.addFocusableActor(playButton);
         stage.addFocusableActor(aboutButton);
 

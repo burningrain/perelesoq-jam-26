@@ -1,0 +1,80 @@
+{
+"name": "boss",
+"animators": [
+	{
+		"name": "attack",
+		"frameFrequency": 12,
+		"mode": "NORMAL",
+		"from": 8,
+		"to": 14
+	},
+	{
+		"name": "prepare",
+		"frameFrequency": 12,
+		"mode": "LOOP_PINGPONG",
+		"from": 1,
+		"to": 7,
+		"looping": true
+	},
+	{
+		"name": "idle",
+		"frameFrequency": 12,
+		"mode": "NORMAL",
+		"from": 1,
+		"to": 2
+	},
+	{
+		"name": "dead",
+		"frameFrequency": 12,
+		"mode": "NORMAL",
+		"from": 6,
+		"to": 7
+	}
+],
+"fsm": {
+	"states": [
+		"attack",
+		"prepare",
+		"idle",
+		"dead"
+	],
+	"startState": "idle",
+	"endState": "dead",
+	"transitions": [
+		{
+			"from": "ANY_STATE",
+			"to": "idle",
+			"fsmPredicates": [
+				"to_idle == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "prepare",
+			"fsmPredicates": [
+				"to_prepare == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "attack",
+			"fsmPredicates": [
+				"to_attack == true"
+			]
+		},
+		{
+			"from": "ANY_STATE",
+			"to": "dead",
+			"fsmPredicates": [
+				"to_dead == true"
+			]
+		}
+	],
+	"variables": {
+		"to_idle": "Boolean",
+		"to_attack": "Boolean",
+		"to_dead": "Boolean",
+		"to_prepare": "Boolean"
+	}
+}
+}

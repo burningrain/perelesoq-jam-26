@@ -21,22 +21,23 @@ import com.github.br.perelesoq.jam26.ecs.component.singleton.Controller1Singleto
 import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.cinematic.CinematicSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.trigger.TriggerComponent;
+import com.github.br.perelesoq.jam26.ecs.system.base.ui.RenderSystem;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 import com.github.br.perelesoq.jam26.render.ui.AnimatedImage;
 import com.github.br.perelesoq.jam26.render.ui.CustomOrthogonalTiledMapRenderer;
 
 public class TriggerFactory extends BaseSystem {
 
-    private final CustomOrthogonalTiledMapRenderer renderer;
+    private final RenderSystem renderSystem;
     private final DialogFactory dialogFactory;
     private final CinematicFactory cinematicFactory;
 
     public TriggerFactory(
-        CustomOrthogonalTiledMapRenderer renderer,
+        RenderSystem renderSystem,
         DialogFactory dialogFactory,
         CinematicFactory cinematicFactory
     ) {
-        this.renderer = renderer;
+        this.renderSystem = renderSystem;
         this.dialogFactory = dialogFactory;
         this.cinematicFactory = cinematicFactory;
     }
@@ -80,9 +81,30 @@ public class TriggerFactory extends BaseSystem {
                     break;
                 case "level_exit_trigger":
                     createLevelExitTrigger(edit, properties);
+                case "back_box":
+                    createBackBoxTrigger(edit, properties);
                     break;
             }
         }
+    }
+
+    private void createBackBoxTrigger(EntityEdit edit, MapProperties properties) {
+        TriggerComponent trigger = edit.create(TriggerComponent.class);
+        trigger.requiresExecution = false;
+
+        trigger.action = new TriggerAction() {
+            @Override
+            public void onEnter(int playerEntityId, int triggerEntityId) {
+                //TODO доделать триггер!!!
+            }
+
+            @Override
+            public void onExit(int playerEntityId, int triggerEntityId) {}
+
+            @Override
+            public void onExecute(int playerEntityId, int triggerEntityId) {
+            }
+        };
     }
 
     public void createLevelExitTrigger(EntityEdit edit, MapProperties properties) {
@@ -145,6 +167,7 @@ public class TriggerFactory extends BaseSystem {
         trigger.action = new TriggerAction() {
             @Override
             public void onEnter(int playerEntityId, int triggerEntityId) {
+                CustomOrthogonalTiledMapRenderer renderer = renderSystem.getRenderer();
                 AnimatedImage actor = renderer.getActor(
                     TiledUiConstants.Layers.ACTORS_LAYER, TiledUiConstants.Actors.CONTROLLER, AnimatedImage.class
                 );
@@ -153,6 +176,7 @@ public class TriggerFactory extends BaseSystem {
 
             @Override
             public void onExit(int playerEntityId, int triggerEntityId) {
+                CustomOrthogonalTiledMapRenderer renderer = renderSystem.getRenderer();
                 AnimatedImage actor = renderer.getActor(
                     TiledUiConstants.Layers.ACTORS_LAYER, TiledUiConstants.Actors.CONTROLLER, AnimatedImage.class
                 );
@@ -184,6 +208,7 @@ public class TriggerFactory extends BaseSystem {
         trigger.action = new TriggerAction() {
             @Override
             public void onEnter(int playerEntityId, int triggerEntityId) {
+                CustomOrthogonalTiledMapRenderer renderer = renderSystem.getRenderer();
                 AnimatedImage actor = renderer.getActor(
                     TiledUiConstants.Layers.ACTORS_LAYER, TiledUiConstants.Actors.TERMINAL, AnimatedImage.class
                 );
@@ -192,6 +217,7 @@ public class TriggerFactory extends BaseSystem {
 
             @Override
             public void onExit(int playerEntityId, int triggerEntityId) {
+                CustomOrthogonalTiledMapRenderer renderer = renderSystem.getRenderer();
                 AnimatedImage actor = renderer.getActor(
                     TiledUiConstants.Layers.ACTORS_LAYER, TiledUiConstants.Actors.TERMINAL, AnimatedImage.class
                 );

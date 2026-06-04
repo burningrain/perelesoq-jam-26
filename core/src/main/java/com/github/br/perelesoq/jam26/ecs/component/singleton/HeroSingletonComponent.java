@@ -4,7 +4,7 @@ public class HeroSingletonComponent {
 
     public static final HeroSingletonComponent INSTANCE = new HeroSingletonComponent();
 
-    public int playerId;
+    public int playerId = -1;
 
     public boolean hasWeapon = false;
 

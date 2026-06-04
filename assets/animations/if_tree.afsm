@@ -1,0 +1,30 @@
+{
+"name": "if_tree",
+"animators": [
+	{
+		"name": "if_tree_end",
+		"frameFrequency": 12,
+		"mode": "NORMAL",
+		"from": 6,
+		"to": 7
+	},
+	{
+		"name": "if_tree",
+		"frameFrequency": 12,
+		"mode": "LOOP_PINGPONG",
+		"from": 1,
+		"to": 7,
+		"looping": true
+	}
+],
+"fsm": {
+	"states": [
+		"if_tree_end",
+		"if_tree"
+	],
+	"startState": "if_tree",
+	"endState": "if_tree_end",
+	"transitions": [],
+	"variables": {}
+}
+}

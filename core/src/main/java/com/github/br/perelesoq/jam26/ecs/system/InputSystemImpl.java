@@ -43,7 +43,7 @@ public class InputSystemImpl extends AbstractInputSystem {
         int entityId = HeroSingletonComponent.INSTANCE.playerId;
 
         // Предохранитель на случай, если игрок еще не заспавнился
-        if (entityId == 0 || !mVelocity.has(entityId)) return;
+        if (entityId == -1 || !mVelocity.has(entityId)) return;
 
         VelocityComponent velocity = mVelocity.get(entityId);
         JumpControlComponent jumpCtrl = mJumpControl.get(entityId);

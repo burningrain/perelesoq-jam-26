@@ -1,25 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="4" tileheight="4" infinite="0" nextlayerid="8" nextobjectid="7">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="4" tileheight="4" infinite="0" nextlayerid="10" nextobjectid="32">
  <tileset firstgid="1" source="window-dialog.tsx"/>
  <tileset firstgid="4" source="game-object.tsx"/>
+ <tileset firstgid="18" source="station.tsx"/>
  <layer id="1" name="Tile Layer 1" width="80" height="45">
   <data encoding="base64" compression="zlib">
-   eJztwQENAAAAwqD3T20PBxQAAAAAAAAAAAAAAAAA8GY4QAAB
+   eJzt1cEJwDAMADHvkUf337JDHLRJK0H+5gj2DAAAAAAAfNN6ewCAQ9mfnYbNGg0r/ToNOw07DRv3pNOv0Y/d+JMAwN9d4e3o5NmBZ91RoQSC
   </data>
  </layer>
- <objectgroup id="3" name="actors">
-  <object id="6" name="camera" gid="9" x="286.498" y="101.29" width="22" height="36"/>
+ <imagelayer id="8" name="background_black" locked="1">
+  <image source="../pictures/level_boss/background/background_black.png" width="320" height="180"/>
+ </imagelayer>
+ <imagelayer id="9" name="background_white" visible="0" locked="1">
+  <image source="../pictures/level_boss/background/background_white.png" width="320" height="180"/>
+ </imagelayer>
+ <objectgroup color="#00aa00" id="3" name="actors">
+  <object id="14" name="boss_actor" gid="14" x="91.5" y="111.25" width="137" height="114"/>
+  <object id="20" name="platform" gid="15" x="1.5" y="48" width="40" height="11"/>
+  <object id="21" name="platform" gid="15" x="278.5" y="47.5" width="40" height="11"/>
+  <object id="22" name="platform" gid="15" x="239" y="114.75" width="40" height="11"/>
+  <object id="23" name="platform" gid="15" x="38.75" y="115.25" width="40" height="11"/>
+  <object id="30" name="back_box" gid="17" x="134.75" y="164" width="52" height="36"/>
  </objectgroup>
  <objectgroup color="#ff007f" id="2" name="game_objects" opacity="0.9">
-  <object id="1" name="player" x="9.53926" y="18.7426" width="32" height="32"/>
-  <object id="2" name="wall" x="0.493133" y="134.004" width="319.75" height="15.4545"/>
+  <object id="1" name="player" x="2.44492" y="129.295" width="32" height="32"/>
+  <object id="2" name="wall" x="0" y="164" width="319.75" height="15.4545"/>
+  <object id="7" name="wall" x="0" y="-16" width="319.75" height="15.4545"/>
+  <object id="8" name="wall" x="-33.875" y="-16.0606" width="33.0833" height="195.454"/>
+  <object id="9" name="wall" x="320.458" y="-16.727" width="33.0833" height="196.454"/>
+  <object id="12" name="boss" x="91.5" y="0" width="137" height="114"/>
+  <object id="24" name="wall" x="1.375" y="36.5228" width="40" height="11.4545"/>
+  <object id="27" name="wall" x="38.875" y="104.023" width="40" height="11.4545"/>
+  <object id="28" name="wall" x="239" y="103.773" width="40" height="11.4545"/>
+  <object id="29" name="wall" x="278.5" y="36.5228" width="40" height="11.4545"/>
  </objectgroup>
- <objectgroup id="4" name="triggers"/>
- <group id="5" name="dialog_group">
-  <objectgroup color="#00aa00" id="7" name="dialog_back">
+ <objectgroup color="#ffff7f" id="4" name="triggers">
+  <object id="31" name="back_box_trigger" x="133.75" y="127.5" width="52.75" height="35.5"/>
+ </objectgroup>
+ <group id="5" name="dialog_group" visible="0">
+  <objectgroup color="#00aa00" id="7" name="dialog_back" locked="1">
    <object id="3" name="dialog_window" gid="1" x="58" y="68" width="204" height="56"/>
   </objectgroup>
-  <objectgroup id="6" name="dialog_actors">
+  <objectgroup id="6" name="dialog_actors" locked="1">
    <object id="4" name="avatar" x="68.2" y="18" width="40" height="44"/>
    <object id="5" name="text" x="115.38" y="18" width="141" height="44"/>
   </objectgroup>

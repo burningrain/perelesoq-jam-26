@@ -97,6 +97,17 @@ public class EntityFactory extends BaseSystem {
         renderComponent.layer = TiledUiConstants.Layers.GAME_OBJECTS_LAYER;
     }
 
+    private void createBoss(MapProperties properties, float x, float y, float width, float height) {
+        EntityEdit bossEntity = createStaticObstacle(x, y, width, height);
+
+        AnimationComponent animationComponent = bossEntity.create(AnimationComponent.class);
+        animationComponent.simpleAnimationComponent = AnimationFactory.createBoss();
+
+        RenderComponent renderComponent = bossEntity.create(RenderComponent.class);
+        renderComponent.textureRegion = animationComponent.simpleAnimationComponent.animatorDynamicPart.currentFrame;
+        renderComponent.layer = TiledUiConstants.Layers.GAME_OBJECTS_LAYER;
+    }
+
     public static Integer getDoorId(MapProperties properties) {
         String doorId = properties.get("doorId", String.class);
         if (doorId == null) {
@@ -140,6 +151,9 @@ public class EntityFactory extends BaseSystem {
                     break;
                 case "door":
                     createDoor(properties, x, y, width, height);
+                    break;
+                case "boss":
+                    createBoss(properties, x, y, width, height);
                     break;
             }
         }

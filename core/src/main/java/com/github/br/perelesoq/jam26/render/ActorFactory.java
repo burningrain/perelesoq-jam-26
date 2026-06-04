@@ -8,7 +8,6 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.github.br.perelesoq.jam26.Resources;
@@ -46,9 +45,29 @@ public class ActorFactory {
                 return createDialogAvatar(properties);
             case TiledUiConstants.Actors.DIALOG.TEXT:
                 return createDialogText(properties);
+
+            // boss level
+            case TiledUiConstants.Actors.PLATFORM:
+                return createPlatform(properties);
+            case TiledUiConstants.Actors.BACK_BOX:
+                return createBackBox(properties);
+            case TiledUiConstants.Actors.BOSS_ACTOR:
+                return createBoss(properties);
             default:
                 throw new IllegalArgumentException("unknown stage2d actor: " + name);
         }
+    }
+
+    private Actor createBoss(MapProperties properties) {
+        return createAnimationImage("boss");
+    }
+
+    private Actor createBackBox(MapProperties properties) {
+        return createAnimationImage(TiledUiConstants.Actors.BACK_BOX);
+    }
+
+    private Actor createPlatform(MapProperties properties) {
+        return createAnimationImage("small_platform");
     }
 
     private Actor createDialogText(MapProperties properties) {

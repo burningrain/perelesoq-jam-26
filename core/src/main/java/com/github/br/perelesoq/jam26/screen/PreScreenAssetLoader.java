@@ -23,6 +23,15 @@ public class PreScreenAssetLoader implements AssetsLoader {
                 new SimpleAnimationFsmLoadedCallback.SimpleAnimationPath(
                     Resources.Animations.DOOR_ANIM_FSM,
                     Resources.Animations.DOOR
+                ),
+
+                new SimpleAnimationFsmLoadedCallback.SimpleAnimationPath(
+                    Resources.Animations.IF_TREE_ANIM_FSM,
+                    Resources.Animations.IF_TREE
+                ),
+                new SimpleAnimationFsmLoadedCallback.SimpleAnimationPath(
+                    Resources.Animations.BOSS_ANIM_FSM,
+                    Resources.Animations.BOSS
                 )
             }
         );

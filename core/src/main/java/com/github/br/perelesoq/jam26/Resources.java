@@ -40,6 +40,12 @@ public interface Resources {
 
         String DOOR_ANIM_FSM = "animations/door.afsm";
         String DOOR = "door";
+
+        String IF_TREE_ANIM_FSM = "animations/if_tree.afsm";
+        String IF_TREE = "if_tree";
+
+        String BOSS_ANIM_FSM = "animations/boss.afsm";
+        String BOSS = "boss";
     }
 
 }
