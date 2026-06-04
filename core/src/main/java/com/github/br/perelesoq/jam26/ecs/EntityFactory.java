@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.github.br.perelesoq.jam26.animation.AnimationFactory;
 import com.github.br.perelesoq.jam26.ecs.component.*;
+import com.github.br.perelesoq.jam26.ecs.component.door.DoorComponent;
 import com.github.br.perelesoq.jam26.ecs.component.physics.Hitbox;
 import com.github.br.perelesoq.jam26.ecs.component.physics.PhysicsComponent;
 import com.github.br.perelesoq.jam26.ecs.component.ui.render.RenderComponent;

@@ -1,6 +1,5 @@
 package com.github.br.perelesoq.jam26.screen;
 
-import com.artemis.Entity;
 import com.artemis.World;
 import com.artemis.WorldConfiguration;
 import com.artemis.WorldConfigurationBuilder;
@@ -8,23 +7,17 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.github.ashvard.gdx.simple.animation.SimpleAnimation;
 import com.github.br.perelesoq.jam26.Constants;
 import com.github.br.perelesoq.jam26.Resources;
+import com.github.br.perelesoq.jam26.dialogs.CinematicFactory;
 import com.github.br.perelesoq.jam26.dialogs.DialogFactory;
 import com.github.br.perelesoq.jam26.ecs.EntityFactory;
-import com.github.br.perelesoq.jam26.ecs.component.singleton.cinematic.CinematicSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
-import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.ViewPortSingletonComponent;
-import com.github.br.perelesoq.jam26.ecs.component.singleton.cinematic.DelayStep;
-import com.github.br.perelesoq.jam26.ecs.component.ui.render.RenderComponent;
-import com.github.br.perelesoq.jam26.ecs.system.DoorSystem;
-import com.github.br.perelesoq.jam26.ecs.system.HeroAnimationStateSystem;
-import com.github.br.perelesoq.jam26.ecs.system.InputSystemImpl;
-import com.github.br.perelesoq.jam26.ecs.system.SirenSystem;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.cinematic.CinematicSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.system.*;
 import com.github.br.perelesoq.jam26.ecs.system.base.audio.AudioSystem;
 import com.github.br.perelesoq.jam26.ecs.system.base.cinematic.CinematicSystem;
 import com.github.br.perelesoq.jam26.ecs.system.base.physics.PhysicsSystem;
@@ -36,10 +29,6 @@ import com.github.br.perelesoq.jam26.ecs.system.base.ui.RenderSystem;
 import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogViewAvatarFactory;
 import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogueSystem;
 import com.github.br.perelesoq.jam26.render.ActorFactory;
-import com.github.br.perelesoq.jam26.render.ElevatorImage;
-import com.github.br.perelesoq.jam26.render.TiledUiConstants;
-import com.github.br.perelesoq.jam26.render.ui.AnimatedImage;
-import com.github.br.perelesoq.jam26.render.ui.CustomOrthogonalTiledMapRenderer;
 import com.github.br.perelesoq.jam26.structure.screen.AbstractGameScreen;
 
 public class Level1Screen extends AbstractGameScreen {
@@ -47,12 +36,14 @@ public class Level1Screen extends AbstractGameScreen {
     private TiledMap tiledMap;
     private ActorFactory actorFactory;
     private DialogFactory dialogFactory;
+    private CinematicFactory cinematicFactory;
 
     private World world;
 
     @Override
     public void show() {
         dialogFactory = new DialogFactory();
+        cinematicFactory = new CinematicFactory();
 
         AssetManager assetManager = getGameManager().assetManager;
         tiledMap = assetManager.get(Resources.Tiled.LEVEL_1_ENTRANCE);
@@ -74,115 +65,7 @@ public class Level1Screen extends AbstractGameScreen {
         TriggerFactory system = world.getSystem(TriggerFactory.class);
         system.createGameObjects(tiledMap);
 
-        startCinematic();
-    }
-
-    private void startCinematic() {
-        Array<CinematicSingletonComponent.CinematicStep> script = new Array<>();
-        script.add(new CinematicSingletonComponent.CinematicStep() {
-            @Override
-            public void onStart(World world) {
-                Entity heroEntity = world.getEntity(HeroSingletonComponent.INSTANCE.playerId);
-                RenderComponent component = heroEntity.getComponent(RenderComponent.class);
-                component.isVisible = false;
-            }
-
-            @Override
-            public boolean onUpdate(World world, float delta) {
-                return true; // Мгновенный шаг, сразу переходим дальше
-            }
-        });
-        script.add(new CinematicSingletonComponent.CinematicStep() {
-
-            private ElevatorImage elevatorImage;
-
-            @Override
-            public void onStart(World world) {
-                RenderSystem system = world.getSystem(RenderSystem.class);
-                CustomOrthogonalTiledMapRenderer renderer = system.getRenderer();
-                elevatorImage = renderer.getActor(
-                    TiledUiConstants.Layers.ACTORS_LAYER,
-                    TiledUiConstants.Actors.ELEVATOR,
-                    ElevatorImage.class
-                );
-            }
-
-            @Override
-            public boolean onUpdate(World world, float delta) {
-                float y = elevatorImage.getY();
-                System.out.println(y);
-                if (y <= 16) {
-                    return true;
-                }
-                elevatorImage.setY(elevatorImage.getY() - delta * 25);
-                return false;
-            }
-        });
-        script.add(new CinematicSingletonComponent.CinematicStep() {
-
-            private ElevatorImage elevatorImage;
-
-            @Override
-            public void onStart(World world) {
-                RenderSystem system = world.getSystem(RenderSystem.class);
-                CustomOrthogonalTiledMapRenderer renderer = system.getRenderer();
-                elevatorImage = renderer.getActor(
-                    TiledUiConstants.Layers.ACTORS_LAYER,
-                    TiledUiConstants.Actors.ELEVATOR,
-                    ElevatorImage.class
-                );
-
-                elevatorImage.getAnimationHero().play();
-                elevatorImage.getDoors().play();
-            }
-
-            @Override
-            public boolean onUpdate(World world, float delta) {
-                AnimatedImage doors = elevatorImage.getDoors();
-                return doors.isAnimationEnd();
-            }
-        });
-        script.add(new DelayStep(2f));
-        script.add(new CinematicSingletonComponent.CinematicStep() {
-
-            private ElevatorImage elevatorImage;
-
-            @Override
-            public void onStart(World world) {
-                RenderSystem system = world.getSystem(RenderSystem.class);
-                CustomOrthogonalTiledMapRenderer renderer = system.getRenderer();
-                elevatorImage = renderer.getActor(
-                    TiledUiConstants.Layers.ACTORS_LAYER,
-                    TiledUiConstants.Actors.ELEVATOR,
-                    ElevatorImage.class
-                );
-
-                AnimatedImage animationHero = elevatorImage.getAnimationHero();
-                animationHero.reset();
-                animationHero.setVisible(false);
-            }
-
-            @Override
-            public boolean onUpdate(World world, float delta) {
-                return true;
-            }
-        });
-
-        script.add(new CinematicSingletonComponent.CinematicStep() {
-            @Override
-            public void onStart(World world) {
-                Entity heroEntity = world.getEntity(HeroSingletonComponent.INSTANCE.playerId);
-                RenderComponent component = heroEntity.getComponent(RenderComponent.class);
-                component.isVisible = true;
-            }
-
-            @Override
-            public boolean onUpdate(World world, float delta) {
-                return true; // Мгновенный шаг, сразу переходим дальше
-            }
-        });
-
-        CinematicSingletonComponent.INSTANCE.start(script);
+        cinematicFactory.start(cinematicFactory.startLevel1Cinematic());
     }
 
     private World createEcsEngine(AssetManager assetManager) {
@@ -230,10 +113,11 @@ public class Level1Screen extends AbstractGameScreen {
             .with(animationSystem)                    // Обновляет кадры анимации
             .with(renderSystem)                       // Очищает экран, применяет грязные флаги слоев Сирены, рисует карту и сущности
             .with(new AudioSystem(getGameManager().assetManager)) // Проигрывает накопленные за кадр звуки сирены и эффекты
+            .with(new LevelTransitionSystem(getGameManager()))
 
             // --- НЕАКТИВНЫЕ ФАБРИКИ (Порядок не важен, они выключены) ---
             .with(new EntityFactory())
-            .with(new TriggerFactory(renderSystem.getRenderer(), dialogFactory))
+            .with(new TriggerFactory(renderSystem.getRenderer(), dialogFactory, cinematicFactory))
             .build();
 
         return new World(setup);

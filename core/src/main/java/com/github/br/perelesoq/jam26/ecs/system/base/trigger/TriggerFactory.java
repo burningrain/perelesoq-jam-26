@@ -2,22 +2,24 @@ package com.github.br.perelesoq.jam26.ecs.system.base.trigger;
 
 import com.artemis.BaseSystem;
 import com.artemis.EntityEdit;
+import com.artemis.World;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.github.br.perelesoq.jam26.dialogs.CinematicFactory;
 import com.github.br.perelesoq.jam26.dialogs.DialogFactory;
 import com.github.br.perelesoq.jam26.ecs.EntityFactory;
-import com.github.br.perelesoq.jam26.ecs.component.CharacterStateComponent;
-import com.github.br.perelesoq.jam26.ecs.component.OpenDoorIntentComponent;
-import com.github.br.perelesoq.jam26.ecs.component.TransformComponent;
-import com.github.br.perelesoq.jam26.ecs.component.VelocityComponent;
+import com.github.br.perelesoq.jam26.ecs.component.*;
+import com.github.br.perelesoq.jam26.ecs.component.door.OpenDoorIntentComponent;
 import com.github.br.perelesoq.jam26.ecs.component.physics.Hitbox;
 import com.github.br.perelesoq.jam26.ecs.component.physics.PhysicsComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.Controller1SingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.cinematic.CinematicSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.trigger.TriggerComponent;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 import com.github.br.perelesoq.jam26.render.ui.AnimatedImage;
@@ -27,10 +29,16 @@ public class TriggerFactory extends BaseSystem {
 
     private final CustomOrthogonalTiledMapRenderer renderer;
     private final DialogFactory dialogFactory;
+    private final CinematicFactory cinematicFactory;
 
-    public TriggerFactory(CustomOrthogonalTiledMapRenderer renderer, DialogFactory dialogFactory) {
+    public TriggerFactory(
+        CustomOrthogonalTiledMapRenderer renderer,
+        DialogFactory dialogFactory,
+        CinematicFactory cinematicFactory
+    ) {
         this.renderer = renderer;
         this.dialogFactory = dialogFactory;
+        this.cinematicFactory = cinematicFactory;
     }
 
     @Override
@@ -70,8 +78,62 @@ public class TriggerFactory extends BaseSystem {
                 case "controller_trigger":
                     createControllerTrigger(edit, properties);
                     break;
+                case "level_exit_trigger":
+                    createLevelExitTrigger(edit, properties);
+                    break;
             }
         }
+    }
+
+    public void createLevelExitTrigger(EntityEdit edit, MapProperties properties) {
+        String nextLevelKey = properties.get("nextLevelState", String.class);
+        String endCinematic = properties.get("endCinematic", String.class);
+
+        TriggerComponent trigger = edit.create(TriggerComponent.class);
+        trigger.requiresExecution = false;
+
+        trigger.action = new TriggerAction() {
+            @Override
+            public void onEnter(int playerEntityId, int triggerEntityId) {}
+
+            @Override
+            public void onExit(int playerEntityId, int triggerEntityId) {}
+
+            @Override
+            public void onExecute(int playerEntityId, int triggerEntityId) {
+               if (endCinematic == null) {
+                    createShangeLevelIntentComponent(nextLevelKey, trigger);
+                    return;
+                }
+
+                Array<CinematicSingletonComponent.CinematicStep> cinematicScript =
+                    cinematicFactory.getCinematicScript(endCinematic);
+                if (cinematicScript != null) {
+                    cinematicScript.add(new CinematicSingletonComponent.CinematicStep() {
+                        @Override
+                        public void onStart(World world) {
+                        }
+                        @Override
+                        public boolean onUpdate(World world, float delta) {
+                            createShangeLevelIntentComponent(nextLevelKey, trigger);
+                            return true;
+                        }
+                    });
+                    cinematicFactory.start(cinematicScript);
+                } else {
+                    createShangeLevelIntentComponent(nextLevelKey, trigger);
+                }
+            }
+        };
+    }
+
+    private void createShangeLevelIntentComponent(String nextLevelKey, TriggerComponent trigger) {
+        // Создаем сущность-интент для смены уровня
+        int intentEntity = world.create();
+        ChangeLevelIntentComponent intent = world.edit(intentEntity).create(ChangeLevelIntentComponent.class);
+        intent.nextLevelKey = nextLevelKey;
+        // Выключаем триггер, чтобы не нажать дважды во время анимации
+        trigger.isNotReused = true;
     }
 
     public void createControllerTrigger(EntityEdit edit, MapProperties properties) {

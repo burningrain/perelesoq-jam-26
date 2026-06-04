@@ -13,24 +13,17 @@ public class DialogFactory {
     public static final String TERMINAL_1 = "terminal_1";
     public static final String CONTROLLER_1_IS_NOT_ACTIVATED = "controller_1_is_not_activated";
 
-    private final ObjectMap<String, Array<DialogueSingletonComponent.Phrase>> dialogMap = new ObjectMap<>();
-
-    public DialogFactory() {
-        terminal_1();
-        controller_1_is_not_activated();
-    }
-
-    private void controller_1_is_not_activated() {
-        addDialog(CONTROLLER_1_IS_NOT_ACTIVATED, new Array<DialogueSingletonComponent.Phrase>() {{
+    private Array<DialogueSingletonComponent.Phrase> controller_1_is_not_activated() {
+        return new Array<DialogueSingletonComponent.Phrase>() {{
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_HERO,
                 "Хм...пропуск не работает..."
             ));
-        }});
+        }};
     }
 
-    private void terminal_1() {
-        addDialog(TERMINAL_1, new Array<DialogueSingletonComponent.Phrase>() {{
+    private Array<DialogueSingletonComponent.Phrase> terminal_1() {
+        return new Array<DialogueSingletonComponent.Phrase>() {{
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
                 "Эй, ты там, вижу тебя. Здравствуй!"
@@ -93,20 +86,19 @@ public class DialogFactory {
                     Controller1SingletonComponent.INSTANCE.isActive = true;
                 }
             ));
-        }});
-    }
-
-    public void addDialog(String dialog, Array<DialogueSingletonComponent.Phrase> array) {
-        dialogMap.put(dialog, array);
+        }};
     }
 
     public Array<DialogueSingletonComponent.Phrase> getDialog(String dialog) {
-        Array<DialogueSingletonComponent.Phrase> phrases = dialogMap.get(dialog);
-        if (phrases == null) {
-            throw new GdxRuntimeException("prases are not found for dialog [" + dialog + "]");
-        }
+        switch (dialog) {
+            case TERMINAL_1:
+                return terminal_1();
+            case CONTROLLER_1_IS_NOT_ACTIVATED:
+                return controller_1_is_not_activated();
 
-        return phrases;
+            default:
+                throw new GdxRuntimeException("prases are not found for dialog [" + dialog + "]");
+        }
     }
 
 }

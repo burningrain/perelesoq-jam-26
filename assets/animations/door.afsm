@@ -52,7 +52,14 @@
 			"fsmPredicates": [
 				"isOpening == true"
 			]
-		}
+		},
+		{
+            "from": "is_opening",
+            "to": "is_closing",
+            "fsmPredicates": [
+                "isClosing == true"
+            ]
+        },
 	],
 	"variables": {
 		"isClosing": "Boolean",

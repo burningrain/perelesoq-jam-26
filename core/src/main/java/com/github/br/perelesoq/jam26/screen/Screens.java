@@ -12,4 +12,7 @@ public interface Screens {
         new Level1Screen(), new Level1ScreenLoader()
     );
 
+    GameScreenState LEVEL_BOSS = new GameScreenState(
+        new LevelBossScreen(), new LevelBossScreenLoader()
+    );
 }

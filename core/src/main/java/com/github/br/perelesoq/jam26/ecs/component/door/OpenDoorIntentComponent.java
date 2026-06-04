@@ -1,4 +1,4 @@
-package com.github.br.perelesoq.jam26.ecs.component;
+package com.github.br.perelesoq.jam26.ecs.component.door;
 
 import com.artemis.PooledComponent;
 

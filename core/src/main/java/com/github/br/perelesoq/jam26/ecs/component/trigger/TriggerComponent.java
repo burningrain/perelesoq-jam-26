@@ -9,10 +9,11 @@ public class TriggerComponent extends PooledComponent {
 
     // Требуется ли нажимать кнопку "E" (EXECUTE), или триггер срабатывает автоматически при наступлении
     public boolean requiresExecution = false;
+    public boolean isNotReused = false; // триггер многоразовый или нет
 
     // Внутреннее состояние: находится ли сейчас игрок внутри этой зоны
     public boolean isPlayerInside = false;
-    public boolean isNotReused = false;
+
 
     @Override
     protected void reset() {
