@@ -17,4 +17,8 @@ public class Level1Screen extends AbstractLevelScreen {
         return Resources.Tiled.LEVEL_1_ENTRANCE;
     }
 
+    @Override
+    protected void onFirstFrame(UserFactoryImpl userFactory) {
+    }
+
 }

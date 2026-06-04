@@ -17,8 +17,6 @@ public class LevelBossScreen extends AbstractLevelScreen {
 
     @Override
     protected void showLevel(UserFactoryImpl userFactory) {
-        //HeroSingletonComponent.INSTANCE.hasWeapon = true;
-
         RenderSystem system = userFactory.ecsWorld.getSystem(RenderSystem.class);
         CustomOrthogonalTiledMapRenderer renderer = system.getRenderer();
 
@@ -34,7 +32,10 @@ public class LevelBossScreen extends AbstractLevelScreen {
         bossActor.setVisible(false);
 
         HeroSingletonComponent.INSTANCE.hasWeapon = true;
+    }
 
+    @Override
+    protected void onFirstFrame(UserFactoryImpl userFactory) {
         DialogFactory dialogFactory = userFactory.dialogFactory;
         DialogueSingletonComponent.INSTANCE.start(dialogFactory.boss_opening());
     }

@@ -13,7 +13,7 @@ import com.github.tommyettinger.textra.TypingLabel;
 
 public class DialogueSystem extends BaseSystem {
 
-    private final DialogueView dialogueView;
+    private DialogueView dialogueView;
 
     private final InputSystemImpl inputSystem;
     private final RenderSystem renderSystem;
@@ -28,13 +28,9 @@ public class DialogueSystem extends BaseSystem {
 
     protected ComponentMapper<ChangeRenderLayerComponent> mLayerChange;
 
-    public DialogueSystem(
-        InputSystemImpl inputSystem,
-        RenderSystem renderSystem,
-        DialogViewAvatarFactory avatarFactory
-    ) {
-        this.inputSystem = inputSystem;
-        this.renderSystem = renderSystem;
+    private DialogViewAvatarFactory avatarFactory;
+
+    public void refreshDialogView() {
         this.dialogueView = new DialogueView(
             avatarFactory,
             renderSystem.getRenderer().getActor(
@@ -53,6 +49,17 @@ public class DialogueSystem extends BaseSystem {
                 AnimatedImage.class
             )
         );
+    }
+
+    public DialogueSystem(
+        InputSystemImpl inputSystem,
+        RenderSystem renderSystem,
+        DialogViewAvatarFactory avatarFactory
+    ) {
+        this.avatarFactory = avatarFactory;
+        this.inputSystem = inputSystem;
+        this.renderSystem = renderSystem;
+        refreshDialogView();
     }
 
     @Override

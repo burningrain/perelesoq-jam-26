@@ -77,8 +77,8 @@ public class MainScreen extends AbstractGameScreen {
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                getGameManager().screenStateManager.changeCurrentState(Screens.LEVEL_BOSS);
-                //TODO после отладки вернуть getGameManager().screenStateManager.changeCurrentState(Screens.LEVEL_1);
+                //getGameManager().screenStateManager.changeCurrentState(Screens.LEVEL_BOSS);
+                getGameManager().screenStateManager.changeCurrentState(Screens.LEVEL_1);
             }
         });
 
@@ -100,7 +100,7 @@ public class MainScreen extends AbstractGameScreen {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.left().bottom().padBottom(6f);
+        table.center().bottom().padBottom(6f);
 
 //        table.add(settingsButton).left();
         table.add(playButton).spaceLeft(8f);

@@ -38,6 +38,8 @@ public class LevelTransitionSystem extends IteratingSystem {
 
     private GameScreenState getScreenStateByKey(String key) {
         switch (key) {
+            case "MAIN":
+                return Screens.MAIN;
             case "LEVEL_BOSS":
                 return Screens.LEVEL_BOSS;
             default:

@@ -132,6 +132,7 @@ public class UserFactoryImpl implements UserFactory {
         } else {
             RenderSystem renderSystem = ecsWorld.getSystem(RenderSystem.class);
             renderSystem.setNewTileMap(tiledMap);
+            ecsWorld.getSystem(DialogueSystem.class).refreshDialogView();
         }
 
         // 1. Стираем старые сущности

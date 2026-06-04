@@ -11,6 +11,8 @@ public abstract class AbstractLevelScreen extends AbstractGameScreen {
 
     private UserFactoryImpl userFactory;
 
+    private boolean isFirstFrame = true;
+
     @Override
     public void show() {
         GameManager gameManager = getGameManager();
@@ -23,6 +25,7 @@ public abstract class AbstractLevelScreen extends AbstractGameScreen {
         GameScreenUtils.centerCamera(ViewPortSingletonComponent.INSTANCE.camera);
 
         showLevel(userFactory);
+        isFirstFrame = true; // Включаем предохранитель первого кадра
     }
 
     protected abstract void showLevel(UserFactoryImpl userFactory);
@@ -31,8 +34,21 @@ public abstract class AbstractLevelScreen extends AbstractGameScreen {
 
     @Override
     public void render(float delta) {
+        if (isFirstFrame) {
+            // 1. Прогреваем ECS-мир с дельтой 0. Системы связывают мапперы с новым героем.
+            userFactory.render(0f);
+            isFirstFrame = false;
+
+            // 2. ВЫЗЫВАЕМ ХУК ПЕРВОГО КАДРА
+            onFirstFrame(userFactory);
+
+            return;
+        }
+
         userFactory.render(delta);
     }
+
+    protected abstract void onFirstFrame(UserFactoryImpl userFactory);
 
     @Override
     public void resize(int width, int height) {

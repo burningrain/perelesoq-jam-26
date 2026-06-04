@@ -2,13 +2,17 @@ package com.github.br.perelesoq.jam26.ecs.system;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
+import com.artemis.World;
 import com.artemis.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Array;
 import com.github.ashvard.gdx.simple.animation.fsm.FsmContext;
 import com.github.br.perelesoq.jam26.dialogs.CinematicFactory;
+import com.github.br.perelesoq.jam26.ecs.component.ChangeLevelIntentComponent;
 import com.github.br.perelesoq.jam26.ecs.component.HealthComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.cinematic.CinematicSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.cinematic.DelayStep;
 import com.github.br.perelesoq.jam26.ecs.component.ui.AnimationComponent;
+import com.github.br.perelesoq.jam26.screen.Screens;
 
 public class BossDeathSystem extends IteratingSystem {
 
@@ -42,6 +46,19 @@ public class BossDeathSystem extends IteratingSystem {
             world.delete(entityId);
 
             Array<CinematicSingletonComponent.CinematicStep> script = cinematicFactory.bossIsDeadCinematic();
+            script.add(new CinematicSingletonComponent.CinematicStep() {
+                @Override
+                public void onStart(World world) {
+                    int intentEntity = world.create();
+                    ChangeLevelIntentComponent intent = world.edit(intentEntity).create(ChangeLevelIntentComponent.class);
+                    intent.nextLevelKey = "MAIN";
+                }
+
+                @Override
+                public boolean onUpdate(World world, float delta) {
+                    return true;
+                }
+            });
             cinematicFactory.start(script);
         }
     }

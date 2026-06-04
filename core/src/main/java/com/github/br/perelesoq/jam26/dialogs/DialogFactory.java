@@ -119,10 +119,7 @@ public class DialogFactory {
         return new Array<DialogueSingletonComponent.Phrase>() {{
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
-                "Вижу, ты нашел тот самый ПЫЛЕСОС!",
-                () -> {
-                    Controller1SingletonComponent.INSTANCE.isActivated = true;
-                }
+                "Вижу, ты нашел тот самый ПЫЛЕСОС!"
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_HERO,
@@ -130,10 +127,7 @@ public class DialogFactory {
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
-                "И чем же теперь мы займемся?",
-                () -> {
-                    Controller1SingletonComponent.INSTANCE.isActivated = true;
-                }
+                "И чем же теперь мы займемся?"
             ));
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_HERO,
