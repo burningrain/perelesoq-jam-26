@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="4" tileheight="4" infinite="0" nextlayerid="10" nextobjectid="32">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="4" tileheight="4" infinite="0" nextlayerid="10" nextobjectid="34">
  <tileset firstgid="1" source="window-dialog.tsx"/>
  <tileset firstgid="4" source="game-object.tsx"/>
  <tileset firstgid="18" source="station.tsx"/>
@@ -33,6 +33,8 @@
   <object id="27" name="wall" x="38.875" y="104.023" width="40" height="11.4545"/>
   <object id="28" name="wall" x="239" y="103.773" width="40" height="11.4545"/>
   <object id="29" name="wall" x="278.5" y="44.5228" width="40" height="11.4545"/>
+  <object id="32" name="spawn1" x="26.75" y="33"/>
+  <object id="33" name="spawn2" x="298.5" y="31.5"/>
  </objectgroup>
  <objectgroup color="#ffff7f" id="4" name="triggers">
   <object id="31" name="back_box_trigger" x="133.75" y="127.5" width="52.75" height="35.5"/>

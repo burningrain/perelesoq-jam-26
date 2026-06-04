@@ -15,9 +15,11 @@ import com.github.br.perelesoq.jam26.ecs.component.*;
 import com.github.br.perelesoq.jam26.ecs.component.door.DoorComponent;
 import com.github.br.perelesoq.jam26.ecs.component.physics.Hitbox;
 import com.github.br.perelesoq.jam26.ecs.component.physics.PhysicsComponent;
-import com.github.br.perelesoq.jam26.ecs.component.ui.render.RenderComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
+import com.github.br.perelesoq.jam26.ecs.component.trigger.TriggerComponent;
 import com.github.br.perelesoq.jam26.ecs.component.ui.AnimationComponent;
+import com.github.br.perelesoq.jam26.ecs.component.ui.render.RenderComponent;
+import com.github.br.perelesoq.jam26.ecs.system.base.trigger.TriggerAction;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
 
 public class EntityFactory extends BaseSystem {
@@ -167,6 +169,74 @@ public class EntityFactory extends BaseSystem {
         return id;
     }
 
+    private void createSpawnZone(String name, MapProperties properties, float x, float y, float width, float height) {
+        int entityId = world.create();
+        EntityEdit edit = world.edit(entityId);
+
+        // Считываем границы области из Tiled
+        TransformComponent transform = edit.create(TransformComponent.class);
+        transform.x = x;
+        transform.y = y;
+
+        // Сохраняем размеры области прямо в кастомный компонент зоны спавна,
+        // чтобы знать, в каких границах генерировать случайные координаты патронов
+        SpawnZoneComponent zone = edit.create(SpawnZoneComponent.class);
+        zone.width = width;
+        zone.height = height;
+        zone.spawnZoneName = name; // "spawn1" или "spawn2"
+    }
+
+    public void spawnIfTreeInZone(SpawnZoneComponent zone, TransformComponent zoneTrans) {
+        int id = world.create();
+        EntityEdit edit = world.edit(id);
+
+        // Генерируем случайную точку внутри прямоугольника зоны спавна
+        TransformComponent transform = edit.create(TransformComponent.class);
+        transform.x = zoneTrans.x;
+        transform.y = zoneTrans.y;
+
+        // Делаем физический хитбокс патрона сквозным триггером
+        PhysicsComponent physics = edit.create(PhysicsComponent.class);
+        physics.hitbox = new Hitbox(16f, 16f, 0f, 0f, 0f, 0f);
+        physics.useGravity = false; // Патроны парят в воздухе или лежат на платформах зоны
+        physics.isTrigger = true;   // Герой пройдет сквозь него
+
+        // Навешиваем обязательные маркеры для PhysicsSystem, чтобы хитбокс добавился в JBump
+        edit.create(VelocityComponent.class);
+        edit.create(CharacterStateComponent.class);
+
+        // Навешиваем маркер, что это патрон, собираемый игроком
+        edit.create(AmmoItemComponent.class);
+
+        // Превращаем саму сущность патрона в триггер для работы TriggerSystem!
+        TriggerComponent trigger = edit.create(TriggerComponent.class);
+        trigger.requiresExecution = false; // Срабатывает автоматически при наступании (onEnter)
+        trigger.action = new TriggerAction() {
+            @Override
+            public void onEnter(int playerEntityId, int triggerEntityId) {
+                // Игрок подобрал патрон! Наращиваем счетчик пуль
+                // (Для этого мы сейчас добавим поле ammo в HeroSingletonComponent)
+                HeroSingletonComponent.INSTANCE.ammo++;
+                HeroSingletonComponent.INSTANCE.hasWeapon = true; // На случай если патронов было 0
+
+                // Звук подбора (опционально)
+
+                // Уничтожаем патрон из мира
+                world.delete(triggerEntityId);
+            }
+            @Override public void onExit(int pId, int tId) {}
+            @Override public void onExecute(int pId, int tId) {}
+        };
+
+        // Навешиваем графику и анимацию "if_tree" (FSM подгрузится из вашего PreScreenAssetLoader)
+        AnimationComponent animation = edit.create(AnimationComponent.class);
+        animation.simpleAnimationComponent = AnimationFactory.createIfTree();
+
+        RenderComponent render = edit.create(RenderComponent.class);
+        render.textureRegion = animation.simpleAnimationComponent.animatorDynamicPart.currentFrame;
+        render.layer = TiledUiConstants.Layers.GAME_OBJECTS_LAYER;
+    }
+
     public static Integer getDoorId(MapProperties properties) {
         String doorId = properties.get("doorId", String.class);
         if (doorId == null) {
@@ -218,6 +288,12 @@ public class EntityFactory extends BaseSystem {
                     float dir = Float.parseFloat(properties.get("dir", String.class));
                     createBullet(x, y, dir);
                     break;
+                case "spawn1":
+                case "spawn2":
+                    createSpawnZone(name, properties, x, y, width, height);
+                    break;
+                default:
+                    throw new GdxRuntimeException("gameObject [" + name + "] is not found");
             }
         }
     }

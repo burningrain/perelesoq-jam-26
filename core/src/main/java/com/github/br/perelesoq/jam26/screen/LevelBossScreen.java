@@ -3,6 +3,7 @@ package com.github.br.perelesoq.jam26.screen;
 import com.badlogic.gdx.maps.MapLayer;
 import com.github.br.perelesoq.jam26.Resources;
 import com.github.br.perelesoq.jam26.UserFactoryImpl;
+import com.github.br.perelesoq.jam26.ecs.component.SpawnObjectIntentComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.system.base.ui.RenderSystem;
 import com.github.br.perelesoq.jam26.render.TiledUiConstants;
@@ -30,6 +31,14 @@ public class LevelBossScreen extends AbstractLevelScreen {
         HeroSingletonComponent.INSTANCE.hasWeapon = true;
 
         //TODO подвинуть актор на правильную позицию. хз какую, надо выяснять
+
+        // Вызов спавна патронов в зоне spawn1
+        int intentId = userFactory.ecsWorld.create();
+        userFactory.ecsWorld.edit(intentId).create(SpawnObjectIntentComponent.class).targetZoneName = "spawn1";
+
+        // Вызов спавна патронов в зоне spawn1
+        int intentId2 = userFactory.ecsWorld.create();
+        userFactory.ecsWorld.edit(intentId2).create(SpawnObjectIntentComponent.class).targetZoneName = "spawn2";
     }
 
     @Override

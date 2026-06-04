@@ -88,6 +88,7 @@ public class UserFactoryImpl implements UserFactory {
             .with(new CinematicSystem())
             .with(new SirenSystem())                  // Считает альфу и звук до симуляции физики и рендера
             .with(new BossDeathSystem())
+            .with(new ObjectSpawnerSystem())
             .with(new BulletSpawnerSystem())          // ОБРАБАТЫВАЕТ СИГНАЛ ВЫСТРЕЛА СРАЗУ ПОСЛЕ ИНПУТА
             .with(new BulletSystem())
 

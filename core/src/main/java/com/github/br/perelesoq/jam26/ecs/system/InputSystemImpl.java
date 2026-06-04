@@ -98,10 +98,14 @@ public class InputSystemImpl extends AbstractInputSystem {
 
         // --- 4. МЕХАНИКА СТРЕЛЬБЫ ---
         // Проверяем, подобрал ли герой оружие по сюжету
-        if (HeroSingletonComponent.INSTANCE.hasWeapon) {
+        if (HeroSingletonComponent.INSTANCE.hasWeapon && HeroSingletonComponent.INSTANCE.ammo > 0) {
             if (inputRegistry.isActionJustPressed(GameAction.FIRE, mappedController)) {
                 // ВЗВОДИМ ТАЙМЕР АНИМАЦИИ АТАКЫ
                 state.attackAnimTimer = state.ATTACK_ANIM_DURATION;
+
+                // ТРАТИТСЯ ОДИН ПАТРОН "if_tree"
+                HeroSingletonComponent.INSTANCE.ammo--;
+
                 // Направление выстрела берем СТРОГО из TransformComponent!
                 float direction = transform.flipX ? -1f : 1f;
 

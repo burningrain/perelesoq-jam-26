@@ -61,4 +61,11 @@ public class AnimationFactory {
         fsmContext.insert(BossAnimationType.TransitionPredicate.TO_PREPARE, false);
     }
 
+    public static SimpleAnimationComponent createIfTree() {
+        FsmContext fsmContext = new FsmContext();
+
+        AnimatorDynamicPart animatorDynamicPart = new AnimatorDynamicPart(/*animatorIdle*/);
+        return new SimpleAnimationComponent(Resources.Animations.IF_TREE, fsmContext, animatorDynamicPart);
+    }
+
 }

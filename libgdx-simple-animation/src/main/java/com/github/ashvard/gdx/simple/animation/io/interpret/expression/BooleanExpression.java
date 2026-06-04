@@ -1,5 +1,6 @@
 package com.github.ashvard.gdx.simple.animation.io.interpret.expression;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.github.ashvard.gdx.simple.animation.fsm.FsmContext;
 
 public class BooleanExpression implements Expression {
@@ -14,7 +15,11 @@ public class BooleanExpression implements Expression {
 
     @Override
     public boolean eq(FsmContext context) {
-        return (boolean) context.get(variable) == exp;
+        Boolean bool = context.get(variable);
+        if (bool == null) {
+            throw new GdxRuntimeException("variable [" + variable + "] is null");
+        }
+        return (boolean) bool  == exp;
     }
 
     @Override
