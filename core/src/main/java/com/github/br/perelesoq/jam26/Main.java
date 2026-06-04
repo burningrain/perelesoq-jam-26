@@ -71,8 +71,11 @@ public class Main extends AbstractSimpleGame<UserFactoryImpl> {
         assetManager.load(Resources.SKIN, Skin.class, new SkinLoader.SkinParameter(Resources.SKIN_ATLAS));
 
         Skin skin = assetManager.finishLoadingAsset(Resources.SKIN);
-        BitmapFont font = skin.getFont("PressStart2P-Regular_12");
-        font.getRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        BitmapFont font12 = skin.getFont("PressStart2P-Regular_12");
+        font12.getRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
+        BitmapFont font8 = skin.getFont("PressStart2P-Regular_8");
+        font8.getRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
 
     @Override
