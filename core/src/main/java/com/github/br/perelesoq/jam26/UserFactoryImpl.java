@@ -26,7 +26,6 @@ import com.github.br.perelesoq.jam26.ecs.system.base.ui.RenderSystem;
 import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogViewAvatarFactory;
 import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogueSystem;
 import com.github.br.perelesoq.jam26.render.ActorFactory;
-import com.github.br.perelesoq.jam26.render.ui.CustomOrthogonalTiledMapRenderer;
 import com.github.br.perelesoq.jam26.structure.GameManager;
 import com.github.br.perelesoq.jam26.structure.UserFactory;
 
@@ -87,10 +86,11 @@ public class UserFactoryImpl implements UserFactory {
             // --- 2. ФАЗА ИГРОВОЙ ЛОГИКИ И СОСТОЯНИЙ ---
             .with(new CinematicSystem())
             .with(new SirenSystem())                  // Считает альфу и звук до симуляции физики и рендера
-            .with(new BossDeathSystem())
+            .with(new BossDeathSystem(cinematicFactory))
             .with(new ObjectSpawnerSystem())
             .with(new BulletSpawnerSystem())          // ОБРАБАТЫВАЕТ СИГНАЛ ВЫСТРЕЛА СРАЗУ ПОСЛЕ ИНПУТА
             .with(new BulletSystem())
+            .with(new BossAiSystem())
 
             .with(new HeroAnimationStateSystem())     // Определяет, бежит персонаж или прыгает, выставляя флаги флипа
             .with(new DoorSystem())                   // Читает намерения, запускает FSM дверей и вовремя удаляет их физику
@@ -155,6 +155,8 @@ public class UserFactoryImpl implements UserFactory {
         SirenSingletonComponent.INSTANCE.isActive = false;
         Controller1SingletonComponent.INSTANCE.isActivated = false;
 
+        BossSingletonComponent.INSTANCE.reset(); // кривота
+
         // 3. Чистим ядро Artemis без запуска систем
         ecsWorld.getSystem(com.artemis.EntityManager.class).reset();
 
@@ -180,6 +182,7 @@ public class UserFactoryImpl implements UserFactory {
         ecsWorld.getSystem(PhysicsSystem.class).setEnabled(!shouldPauseGameplay);
         ecsWorld.getSystem(TriggerSystem.class).setEnabled(!shouldPauseGameplay);
         ecsWorld.getSystem(InputSystemImpl.class).setGameplayInputPaused(shouldPauseGameplay);
+        ecsWorld.getSystem(BossAiSystem.class).setEnabled(!shouldPauseGameplay);
 
         // Запускаем тик ECS-мира
         ecsWorld.setDelta(delta);

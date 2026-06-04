@@ -12,4 +12,6 @@ public class HeroSingletonComponent {
 
     public int ammo = 0;
 
+    public boolean isHiddenInBox = false;
+
 }

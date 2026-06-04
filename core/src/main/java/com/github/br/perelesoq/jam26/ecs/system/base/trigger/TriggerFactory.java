@@ -98,15 +98,18 @@ public class TriggerFactory extends BaseSystem {
         trigger.action = new TriggerAction() {
             @Override
             public void onEnter(int playerEntityId, int triggerEntityId) {
-                //TODO доделать триггер!!!
+                // Герой зашел в область коробки — он в безопасности
+                com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent.INSTANCE.isHiddenInBox = true;
             }
 
             @Override
-            public void onExit(int playerEntityId, int triggerEntityId) {}
+            public void onExit(int playerEntityId, int triggerEntityId) {
+                // Герой вышел из-за коробки — он уязвим
+                com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent.INSTANCE.isHiddenInBox = false;
+            }
 
             @Override
-            public void onExecute(int playerEntityId, int triggerEntityId) {
-            }
+            public void onExecute(int playerEntityId, int triggerEntityId) {}
         };
     }
 

@@ -12,7 +12,7 @@ public class DialogFactory {
     public static final String TERMINAL_1 = "terminal_1";
     public static final String CONTROLLER_1_IS_NOT_ACTIVATED = "controller_1_is_not_activated";
 
-    private Array<DialogueSingletonComponent.Phrase> controller_1_is_not_activated() {
+    public Array<DialogueSingletonComponent.Phrase> controller_1_is_not_activated() {
         return new Array<DialogueSingletonComponent.Phrase>() {{
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_HERO,
@@ -21,7 +21,7 @@ public class DialogFactory {
         }};
     }
 
-    private Array<DialogueSingletonComponent.Phrase> terminal_1() {
+    public Array<DialogueSingletonComponent.Phrase> terminal_1() {
         return new Array<DialogueSingletonComponent.Phrase>() {{
             add(new DialogueSingletonComponent.Phrase(
                 Resources.Atlases.Objects.AVATAR_COMPUTER,
@@ -84,6 +84,60 @@ public class DialogFactory {
                 () -> {
                     Controller1SingletonComponent.INSTANCE.isActivated = true;
                 }
+            ));
+        }};
+    }
+
+    public static Array<DialogueSingletonComponent.Phrase> boss_is_dead() {
+        return new Array<DialogueSingletonComponent.Phrase>() {{
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "С окончанием игры для геймджема 'перелесок' 2026 года!",
+                () -> {
+                    Controller1SingletonComponent.INSTANCE.isActivated = true;
+                }
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_HERO,
+                "Спасибо!"
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "Чем теперь займешься?!",
+                () -> {
+                    Controller1SingletonComponent.INSTANCE.isActivated = true;
+                }
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_HERO,
+                "ТЕПЕРЬ Я ОТДОХНУ!!!"
+            ));
+        }};
+    }
+
+    public Array<DialogueSingletonComponent.Phrase> boss_opening() {
+        return new Array<DialogueSingletonComponent.Phrase>() {{
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "Вижу, ты нашел тот самый ПЫЛЕСОС!",
+                () -> {
+                    Controller1SingletonComponent.INSTANCE.isActivated = true;
+                }
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_HERO,
+                "Именно!"
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_COMPUTER,
+                "И чем же теперь мы займемся?",
+                () -> {
+                    Controller1SingletonComponent.INSTANCE.isActivated = true;
+                }
+            ));
+            add(new DialogueSingletonComponent.Phrase(
+                Resources.Atlases.Objects.AVATAR_HERO,
+                "Теперь я буду кидаться в тебя ифами!"
             ));
         }};
     }

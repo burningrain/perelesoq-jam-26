@@ -5,6 +5,7 @@ import com.artemis.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.github.br.perelesoq.jam26.ecs.component.door.CloseDoorIntentComponent;
+import com.github.br.perelesoq.jam26.ecs.component.singleton.DialogueSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.HeroSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.cinematic.CinematicSingletonComponent;
 import com.github.br.perelesoq.jam26.ecs.component.singleton.cinematic.DelayStep;
@@ -161,6 +162,66 @@ public class CinematicFactory {
         return script;
     }
 
+    public Array<CinematicSingletonComponent.CinematicStep> bossIsDeadCinematic() {
+        Array<CinematicSingletonComponent.CinematicStep> script = new Array<>();
+        script.add(new CinematicSingletonComponent.CinematicStep() {
+
+            private  AnimatedImage bossActor;
+
+            @Override
+            public void onStart(World world) {
+                CustomOrthogonalTiledMapRenderer renderer = world.getSystem(RenderSystem.class).getRenderer();
+                bossActor = renderer.getActor(TiledUiConstants.Layers.ACTORS_LAYER, TiledUiConstants.Actors.BOSS_ACTOR, AnimatedImage.class);
+                bossActor.setVisible(true);
+            }
+
+            @Override
+            public boolean onUpdate(World world, float delta) {
+                return true;
+            }
+        });
+        script.add(new CinematicSingletonComponent.CinematicStep() {
+            @Override
+            public void onStart(World world) {
+                Array<DialogueSingletonComponent.Phrase> phrases = DialogFactory.boss_is_dead();
+                DialogueSingletonComponent.INSTANCE.start(phrases);
+            }
+
+            @Override
+            public boolean onUpdate(World world, float delta) {
+                // Синематика НЕ перейдет к следующему шагу, пока диалог активен!
+                // Как только игрок дочитает диалог и он закроется,
+                // DialogueSingletonComponent.INSTANCE.isActive станет false, и синематика двинется дальше.
+                return !DialogueSingletonComponent.INSTANCE.isActive;
+            }
+        });
+        script.add(new CinematicSingletonComponent.CinematicStep() {
+
+            private  AnimatedImage bossActor;
+
+            @Override
+            public void onStart(World world) {
+                CustomOrthogonalTiledMapRenderer renderer = world.getSystem(RenderSystem.class).getRenderer();
+                bossActor = renderer.getActor(
+                    TiledUiConstants.Layers.ACTORS_LAYER, TiledUiConstants.Actors.BOSS_ACTOR, AnimatedImage.class
+                );
+            }
+
+            @Override
+            public boolean onUpdate(World world, float delta) {
+                float y = bossActor.getY();
+                if (y <= -160) {
+                    return true;
+                }
+                bossActor.setY(bossActor.getY() - delta * 25);
+                return false;
+            }
+        });
+        script.add(new DelayStep(1f));
+
+        return script;
+    }
+
     public Array<CinematicSingletonComponent.CinematicStep> getCinematicScript(String cinematic) {
         switch (cinematic) {
             case "start_level_1":
@@ -171,5 +232,6 @@ public class CinematicFactory {
                 throw new GdxRuntimeException("cinematic [" + cinematic + "] is not found");
         }
     }
+
 
 }
