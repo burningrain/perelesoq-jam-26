@@ -110,9 +110,9 @@ public class MainScreen extends AbstractGameScreen {
         stage.addActor(table);
 
         aboutButton.validate();
-        //stage.addFocusableActor(settingsButton);
+        stage.addFocusableActor(settingsButton);
         stage.addFocusableActor(playButton);
-        stage.addFocusableActor(aboutButton);
+        //stage.addFocusableActor(aboutButton);
 
         stage.setFocusedActor(playButton);
 
