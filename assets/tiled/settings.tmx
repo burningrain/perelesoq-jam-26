@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="4" tileheight="4" infinite="0" nextlayerid="10" nextobjectid="15">
+ <tileset firstgid="1" source="game-object.tsx"/>
+ <tileset firstgid="15" source="window-dialog.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="80" height="45">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20PBxQAAAAAAAAAAAAAAAAA8GY4QAAB
+  </data>
+ </layer>
+ <imagelayer id="2" name="Image Layer 1">
+  <image source="../ifs-wood.png" width="320" height="180"/>
+ </imagelayer>
+ <objectgroup color="#00ff00" id="3" name="actors">
+  <object id="6" name="controller" gid="9" x="278.583" y="180.333" width="10" height="21"/>
+  <object id="9" name="text" x="5.5" y="17.5" width="310.5" height="149"/>
+ </objectgroup>
+ <objectgroup color="#ff00ff" id="4" name="game_objects">
+  <object id="1" name="player" x="14.2735" y="15.8797" width="32" height="32"/>
+  <object id="2" name="wall" x="-0.483423" y="179.64" width="319.75" height="15.4545"/>
+  <object id="3" name="wall" x="-0.483423" y="-15.3602" width="319.75" height="15.4545"/>
+  <object id="4" name="wall" x="-34.3584" y="-15.4208" width="33.0833" height="195.454"/>
+  <object id="5" name="wall" x="319.975" y="-16.0872" width="33.0833" height="156.954"/>
+  <object id="8" name="spawn1" x="195.25" y="163.5" width="16" height="16"/>
+  <object id="10" name="door" gid="7" x="305" y="179.25" width="15" height="43">
+   <properties>
+    <property name="doorId" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup color="#ffff00" id="5" name="triggers" locked="1">
+  <object id="7" name="level_exit_trigger" x="320" y="179.875" width="42.5" height="37.5">
+   <properties>
+    <property name="nextLevelState" value="MAIN"/>
+   </properties>
+  </object>
+  <object id="11" name="controller_trigger" x="268" y="150.125" width="29.5" height="28.75">
+   <properties>
+    <property name="doorId" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <group id="7" name="dialog_group">
+  <objectgroup id="9" name="dialog_back" locked="1">
+   <object id="12" name="dialog_window" gid="15" x="58" y="68" width="204" height="56"/>
+  </objectgroup>
+  <objectgroup id="8" name="dialog_actors" locked="1">
+   <object id="13" name="avatar" x="68.19" y="18" width="40" height="44"/>
+   <object id="14" name="text" x="116.75" y="18.5" width="141" height="44"/>
+  </objectgroup>
+ </group>
+</map>

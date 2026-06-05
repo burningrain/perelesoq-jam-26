@@ -82,6 +82,13 @@ public class RenderSystem extends BaseSystem {
                 float ox = Float.isNaN(transformComponent.originX) ? frame.getRegionWidth() / 2f : transformComponent.originX;
                 float oy = Float.isNaN(transformComponent.originY) ? frame.getRegionHeight() / 2f : transformComponent.originY;
 
+                // === ДОБАВИТЬ: ТОЧЕЧНОЕ МЕРЦАНИЕ ОТ УРОНА ===
+                if (renderComponent.flashTimer > 0f) {
+                    batch.setColor(Color.RED); // Белая вспышка
+                } else {
+                    batch.setColor(Color.WHITE); // Обычный цвет
+                }
+
                 // Вызываем метод батча, передавая туда параметры региона
                 batch.draw(
                     frame.getTexture(),                      // Наша общая текстура-атлас
@@ -101,6 +108,10 @@ public class RenderSystem extends BaseSystem {
                     isFlipX,                                 // Тот самый флаг разворота влево/вправо!
                     isFlipY                                  // Флаг разворота вверх/вниз
                 );
+
+                if (renderComponent.flashTimer > 0f) {
+                    batch.setColor(Color.WHITE);
+                }
             }
         }
 

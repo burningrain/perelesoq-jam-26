@@ -8,12 +8,14 @@ public class RenderComponent extends PooledComponent {
     public boolean isVisible = true;
     public String layer;
     public transient TextureRegion textureRegion;
+    public float flashTimer = 0f;
 
     @Override
     protected void reset() {
         isVisible = true;
         layer = null;
         textureRegion = null;
+        flashTimer = 0f;
     }
 
 }

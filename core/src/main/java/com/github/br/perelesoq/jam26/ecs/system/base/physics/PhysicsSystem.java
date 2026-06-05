@@ -11,6 +11,7 @@ import com.github.br.perelesoq.jam26.ecs.component.physics.PhysicsComponent;
 import com.github.br.perelesoq.jam26.ecs.component.physics.RemoveFromPhysicsWorldComponent;
 import com.github.br.perelesoq.jam26.ecs.component.trigger.OverlappedThisFrameComponent;
 import com.github.br.perelesoq.jam26.ecs.component.trigger.TriggerComponent;
+import com.github.br.perelesoq.jam26.ecs.component.ui.render.RenderComponent;
 
 public class PhysicsSystem extends IteratingSystem {
 
@@ -215,6 +216,12 @@ public class PhysicsSystem extends IteratingSystem {
                     if (!health.isDead) {
                         BulletComponent bullet = mBullet.get(entityId);
                         health.hp -= bullet.damage;
+
+                        // ЗАЖИГАЕМ ОБЩИЙ ТАЙМЕР ВСПЫШКИ В КОМПОНЕНТЕ РЕНДЕРА ЖЕРТВЫ
+                        ComponentMapper<RenderComponent> mRender = world.getMapper(RenderComponent.class);
+                        if (mRender.has(hitEntityId)) {
+                            mRender.get(hitEntityId).flashTimer = 0.12f; // Задали вспышку на 12 сотых секунды
+                        }
 
                         if (health.hp <= 0) {
                             health.hp = 0;

@@ -44,6 +44,8 @@ public class LevelTransitionSystem extends IteratingSystem {
                 return Screens.LEVEL_1;
             case "LEVEL_BOSS":
                 return Screens.LEVEL_BOSS;
+            case "SETTINGS":
+                return Screens.SETTINGS;
             default:
                 throw new GdxRuntimeException("level [" + key + "] is not found");
         }

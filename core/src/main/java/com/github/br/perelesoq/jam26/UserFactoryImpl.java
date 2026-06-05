@@ -22,6 +22,7 @@ import com.github.br.perelesoq.jam26.ecs.system.base.trigger.TriggerFactory;
 import com.github.br.perelesoq.jam26.ecs.system.base.trigger.TriggerSystem;
 import com.github.br.perelesoq.jam26.ecs.system.base.ui.AnimationSystem;
 import com.github.br.perelesoq.jam26.ecs.system.base.ui.CameraSystem;
+import com.github.br.perelesoq.jam26.ecs.system.base.ui.RenderFlashSystem;
 import com.github.br.perelesoq.jam26.ecs.system.base.ui.RenderSystem;
 import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogViewAvatarFactory;
 import com.github.br.perelesoq.jam26.ecs.system.dialog.DialogueSystem;
@@ -93,6 +94,7 @@ public class UserFactoryImpl implements UserFactory {
             .with(new BossAiSystem())
 
             .with(new HeroAnimationStateSystem())     // Определяет, бежит персонаж или прыгает, выставляя флаги флипа
+            .with(new RenderFlashSystem())
             .with(new DoorSystem())                   // Читает намерения, запускает FSM дверей и вовремя удаляет их физику
 
             // --- 3. ФАЗА ФИЗИКИ И ПЕРЕМЕЩЕНИЯ ---

@@ -173,6 +173,9 @@ public class CinematicFactory {
                 CustomOrthogonalTiledMapRenderer renderer = world.getSystem(RenderSystem.class).getRenderer();
                 bossActor = renderer.getActor(TiledUiConstants.Layers.ACTORS_LAYER, TiledUiConstants.Actors.BOSS_ACTOR, AnimatedImage.class);
                 bossActor.setVisible(true);
+
+                AnimatedImage backBox = renderer.getActor(TiledUiConstants.Layers.ACTORS_LAYER, TiledUiConstants.Actors.BACK_BOX, AnimatedImage.class);
+                backBox.setVisible(false);
             }
 
             @Override

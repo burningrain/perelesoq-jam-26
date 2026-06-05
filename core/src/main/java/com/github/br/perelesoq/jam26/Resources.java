@@ -22,6 +22,7 @@ public interface Resources {
 
         String LEVEL_1_ENTRANCE = "tiled-packed/entrance.tmx";
         String LEVEL_BOSS = "tiled-packed/boss.tmx";
+        String SETTINGS = "tiled-packed/settings.tmx";
 
     }
 

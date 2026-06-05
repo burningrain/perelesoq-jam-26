@@ -82,14 +82,14 @@ public class MainScreen extends AbstractGameScreen {
             }
         });
 
-//        ImageTextButton settingsButton = new ImageTextButton("Настройки", skin);
-//        settingsButton.addListener(new ChangeListener() {
-//            @Override
-//            public void changed(ChangeEvent event, Actor actor) {
-//                System.out.println("настройки");
-//            }
-//        });
-//
+        ImageTextButton settingsButton = new ImageTextButton("Управление", skin);
+        settingsButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                getGameManager().screenStateManager.changeCurrentState(Screens.SETTINGS);
+            }
+        });
+
         ImageTextButton aboutButton = new ImageTextButton("Титры", skin);
         aboutButton.addListener(new ChangeListener() {
             @Override
@@ -102,7 +102,7 @@ public class MainScreen extends AbstractGameScreen {
         table.setFillParent(true);
         table.center().bottom().padBottom(6f);
 
-//        table.add(settingsButton).left();
+        table.add(settingsButton).left();
         table.add(playButton).spaceLeft(8f);
 //        table.add(aboutButton).spaceLeft(8f);
 

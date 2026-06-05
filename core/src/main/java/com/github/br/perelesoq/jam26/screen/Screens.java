@@ -15,4 +15,8 @@ public interface Screens {
     GameScreenState LEVEL_BOSS = new GameScreenState(
         new LevelBossScreen(), new LevelBossScreenLoader()
     );
+
+    GameScreenState SETTINGS = new GameScreenState(
+        new SettingsScreen(), new SettingsScreenLoader()
+    );
 }

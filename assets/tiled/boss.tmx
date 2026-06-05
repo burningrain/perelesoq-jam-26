@@ -33,8 +33,8 @@
   <object id="27" name="wall" x="38.875" y="104.023" width="40" height="11.4545"/>
   <object id="28" name="wall" x="239" y="103.773" width="40" height="11.4545"/>
   <object id="29" name="wall" x="278.5" y="44.5228" width="40" height="11.4545"/>
-  <object id="32" name="spawn1" x="26.75" y="33"/>
-  <object id="33" name="spawn2" x="298.5" y="31.5"/>
+  <object id="32" name="spawn1" x="13.5" y="28.5" width="16" height="16"/>
+  <object id="33" name="spawn2" x="291.5" y="28.5" width="16" height="16"/>
  </objectgroup>
  <objectgroup color="#ffff7f" id="4" name="triggers">
   <object id="31" name="back_box_trigger" x="133.75" y="127.5" width="52.75" height="35.5"/>
